@@ -15,11 +15,10 @@
         label { display: block; font-size: 11px; margin-bottom: 5px; color: #888; text-transform: uppercase; }
         input { width: 100%; padding: 12px; margin-bottom: 10px; box-sizing: border-box; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 6px; font-size: 16px; text-align: center; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        button { width: 100%; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; transition: 0.3s; }
+        button { width: 100%; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
         .btn-main { background: var(--gold); color: black; }
         .btn-history { background: #3a3a3a; color: var(--gold); border: 1px solid var(--gold); font-size: 14px; margin-bottom: 10px; }
         .btn-copy { background: #25D366; color: white; }
-        .btn-reset { background: #ff4444; color: white; font-size: 12px; margin-top: 30px; border: 1px solid #700; opacity: 0.7; }
         #reportPage { display: none; }
         .report-box { background: white; color: black; padding: 20px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; font-size: 13px; line-height: 1.4; border-left: 5px solid var(--gold); }
         .sync-status { text-align: center; font-size: 12px; color: var(--gold); margin-top: 5px; min-height: 15px; }
@@ -81,8 +80,6 @@
 
     <button class="btn-main" id="submitBtn" onclick="processAndSync()">SAVE & GENERATE REPORT</button>
     <div id="status" class="sync-status"></div>
-
-    <button class="btn-reset" onclick="hardReset()">RESET APP MEMORY</button>
 </div>
 
 <div id="reportPage" class="container">
@@ -94,10 +91,9 @@
 
 <script>
     document.getElementById('date').valueAsDate = new Date();
-    // Your specific Script URL
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxZ12i977mP7P1y0Xwr7scV7dZz_TPgyh3tP-WDXngEXl84I8Hrj1MRhggYrPeEw8-JxQ/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwCmIDltUPiUXvCA9c8091UkMbFC1UNO2L5pefuM7X5qx7rFkOzuzadjBuPvkVIBFERMQ/exec";
 
-    function generateFormat(d, tmc, tmcCash, tmcUpi, isHistory = false) {
+    function generateFormat(d, tmc, tmcCash, tmcUpi, tmcCard, tmcNeft, isHistory = false) {
         const todayGym = Number(d.mCash) + Number(d.mUpi) + Number(d.mCard) + Number(d.mNeft);
         const todayPt = Number(d.pCash) + Number(d.pUpi) + Number(d.pCard) + Number(d.pNeft);
         
@@ -106,29 +102,25 @@
 TMC Till Date : ${Number(tmc).toLocaleString()}/-
 
 Gym today’s collection:- ${todayGym.toLocaleString()}/-
-Cash: ${d.mCash}/-
-Upi: ${d.mUpi}/-
-Card credit/Debit: ${d.mCard}/-
-Neft: ${d.mNeft}/-
+Cash: ${d.mCash}/- | Upi: ${d.mUpi}/-
+Card: ${d.mCard}/- | Neft: ${d.mNeft}/-
 
 Today's PT collection: ${todayPt.toLocaleString()}/-
-UPI: ${d.pUpi}/-
-CASH: ${d.pCash}/-
-CARD: ${d.pCard}/-
-NEFT: ${d.pNeft}/-
+Cash: ${d.pCash}/- | Upi: ${d.pUpi}/-
+Card: ${d.pCard}/- | Neft: ${d.pNeft}/-
 
 Today's Total Enquires: ${d.enq}
 Gym membership: ${Number(d.nSale) + Number(d.ren)}
-No. of renewal: ${d.ren}
-No. of new sale: ${d.nSale}
+No. of renewal: ${d.ren} | No. of new sale: ${d.nSale}
 
-Total TMC cash: ${Number(tmcCash).toLocaleString()}/-
+--- TOTAL MONTHLY SUMMARY ---
+Total TMC Cash: ${Number(tmcCash).toLocaleString()}/-
 Total TMC UPI: ${Number(tmcUpi).toLocaleString()}/-
+Total TMC Card: ${Number(tmcCard || 0).toLocaleString()}/-
+Total TMC NEFT: ${Number(tmcNeft || 0).toLocaleString()}/-
 
 Personal collection 
-Yuvraj Sir: ${d.yuvraj}/-
-Naeem: ${d.naeem}/-
-Rohini: ${d.rohini}/-
+Yuvraj Sir: ${d.yuvraj}/- | Naeem: ${d.naeem}/- | Rohini: ${d.rohini}/-
 
 Shift
 Morning: ${d.shiftM}
@@ -138,16 +130,15 @@ Evening: ${d.shiftE}`;
     async function fetchHistory() {
         const dateVal = document.getElementById('date').value;
         const status = document.getElementById('status');
-        if(!dateVal) return alert("Please select a date!");
-        
-        status.innerText = "Accessing Cloud Data...";
+        if(!dateVal) return alert("Select Date First!");
+        status.innerText = "Fetching History...";
         
         try {
             const response = await fetch(`${SCRIPT_URL}?date=${dateVal}`);
             const data = await response.json();
             
             if (data.status === "Not Found") {
-                alert("Entry not found in Google Sheet for this date.");
+                alert("No entry found!");
                 status.innerText = "";
             } else {
                 const r = data.row;
@@ -158,23 +149,17 @@ Evening: ${d.shiftE}`;
                     yuvraj: r[12], naeem: r[13], rohini: r[14],
                     shiftM: r[15], shiftE: r[16]
                 };
-
-                // The script now returns tmcTotal including Card/Neft
-                document.getElementById('reportDisplay').innerText = generateFormat(d, data.tmcTotal, data.tmcCash, data.tmcUpi, true);
+                document.getElementById('reportDisplay').innerText = generateFormat(d, data.tmcTotal, data.tmcCash, data.tmcUpi, data.tmcCard, data.tmcNeft, true);
                 document.getElementById('entryPage').style.display = 'none';
                 document.getElementById('reportPage').style.display = 'block';
                 status.innerText = "";
             }
-        } catch (e) {
-            alert("Connection error. Ensure your Script is deployed as 'Anyone'.");
-            status.innerText = "";
-        }
+        } catch (e) { alert("Error!"); status.innerText=""; }
     }
 
     async function processAndSync() {
         const btn = document.getElementById('submitBtn');
         const status = document.getElementById('status');
-        
         const d = {
             date: document.getElementById('date').value,
             mCash: document.getElementById('mCash').value || 0,
@@ -194,50 +179,21 @@ Evening: ${d.shiftE}`;
             shiftM: document.getElementById('staffMorning').value || "-",
             shiftE: document.getElementById('staffEvening').value || "-"
         };
-
         const todayTotal = Number(d.mCash) + Number(d.mUpi) + Number(d.mCard) + Number(d.mNeft) + Number(d.pCash) + Number(d.pUpi) + Number(d.pCard) + Number(d.pNeft);
         d.todayTotal = todayTotal;
 
         try {
             btn.disabled = true;
-            status.innerText = "Syncing with Cloud Database...";
-            
+            status.innerText = "Saving...";
             await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) });
-
-            // Local Calculation for immediate report
-            let tmc = Number(localStorage.getItem('taiso_tmc')) || 0;
-            let tmcC = Number(localStorage.getItem('taiso_cash')) || 0;
-            let tmcU = Number(localStorage.getItem('taiso_upi')) || 0;
-
-            tmc += todayTotal;
-            tmcC += (Number(d.mCash) + Number(d.pCash));
-            tmcU += (Number(d.mUpi) + Number(d.pUpi));
-
-            localStorage.setItem('taiso_tmc', tmc);
-            localStorage.setItem('taiso_cash', tmcC);
-            localStorage.setItem('taiso_upi', tmcU);
-
-            document.getElementById('reportDisplay').innerText = generateFormat(d, tmc, tmcC, tmcU);
-            document.getElementById('entryPage').style.display = 'none';
-            document.getElementById('reportPage').style.display = 'block';
-            status.innerText = "";
-
-        } catch (e) {
-            alert("Sync Failed! Check internet.");
-            btn.disabled = false;
-        }
-    }
-
-    function hardReset() {
-        if(confirm("This will clear phone memory. Sheet data remains safe. Proceed?")) {
-            localStorage.clear();
+            alert("Data Saved! Now View History for correct TMC Summary.");
             location.reload();
-        }
+        } catch (e) { alert("Error!"); btn.disabled=false; }
     }
 
     function copyDSR() {
         navigator.clipboard.writeText(document.getElementById('reportDisplay').innerText);
-        alert("Report Copied!");
+        alert("Copied!");
     }
 </script>
 </body>
