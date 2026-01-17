@@ -3,100 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAISO DSR - Admin Control</title>
+    <title>TAISO DSR - Admin</title>
     <style>
         :root { --gold: #d4af37; --dark-bg: #121212; --card-bg: #1e1e1e; --text: #ffffff; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark-bg); color: var(--text); margin: 0; padding: 15px; }
         .container { max-width: 450px; margin: auto; }
         .header { text-align: center; border-bottom: 2px solid var(--gold); margin-bottom: 20px; padding-bottom: 10px; }
         .header h1 { color: var(--gold); margin: 0; font-size: 24px; letter-spacing: 2px; }
-        
         .section { background: var(--card-bg); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #333; }
         .section-title { color: var(--gold); font-weight: bold; margin-bottom: 12px; font-size: 14px; text-transform: uppercase; border-left: 3px solid var(--gold); padding-left: 8px; }
-        
         label { display: block; font-size: 12px; margin-bottom: 5px; color: #bbb; }
         input { width: 100%; padding: 12px; margin-bottom: 10px; box-sizing: border-box; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 6px; font-size: 16px; }
-        input:focus { border-color: var(--gold); outline: none; }
-        
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        
-        button { width: 100%; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 16px; }
-        .btn-main { background: var(--gold); color: black; margin-top: 10px; }
-        .btn-copy { background: #25D366; color: white; margin-top: 10px; }
-        .btn-back { background: #444; color: white; margin-top: 10px; }
-        .btn-reset { background: #8b0000; color: white; font-size: 10px; padding: 5px; margin-top: 30px; opacity: 0.6; }
-
+        button { width: 100%; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .btn-main { background: var(--gold); color: black; }
+        .btn-copy { background: #25D366; color: white; }
+        .btn-back { background: #444; color: white; }
         #reportPage { display: none; }
-        .report-box { background: white; color: black; padding: 20px; border-radius: 8px; font-family: 'Courier New', Courier, monospace; white-space: pre-wrap; font-size: 13px; line-height: 1.4; border-left: 5px solid var(--gold); }
+        .report-box { background: white; color: black; padding: 20px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; font-size: 13px; line-height: 1.4; border-left: 5px solid var(--gold); }
     </style>
 </head>
 <body>
 
 <div id="entryPage" class="container">
-    <div class="header">
-        <h1>TAISO DSR</h1>
-        <p style="font-size: 12px; color: #888;">Admin Data Entry Portal</p>
-    </div>
+    <div class="header"><h1>TAISO DSR</h1></div>
 
     <div class="section">
-        <label>Select Entry Date</label>
+        <label>Entry Date</label>
         <input type="date" id="date">
     </div>
 
     <div class="section">
         <div class="section-title">1. Membership Sale & MOP</div>
         <div class="grid-2">
-            <div><label>Cash Amount</label><input type="number" id="mCash" value="0"></div>
-            <div><label>UPI Amount</label><input type="number" id="mUpi" value="0"></div>
-            <div><label>Card Amount</label><input type="number" id="mCard" value="0"></div>
-            <div><label>NEFT/Other</label><input type="number" id="mNeft" value="0"></div>
+            <input type="number" id="mCash" placeholder="Cash" value="0">
+            <input type="number" id="mUpi" placeholder="UPI" value="0">
+            <input type="number" id="mCard" placeholder="Card" value="0">
+            <input type="number" id="mNeft" placeholder="NEFT" value="0">
         </div>
     </div>
 
     <div class="section">
-        <div class="section-title">2. Enquiry & Conversion</div>
-        <label>Total Enquiries Today</label>
+        <div class="section-title">2. PT Collection & MOP</div>
+        <div class="grid-2">
+            <input type="number" id="pCash" placeholder="PT Cash" value="0">
+            <input type="number" id="pUpi" placeholder="PT UPI" value="0">
+            <input type="number" id="pCard" placeholder="PT Card" value="0">
+            <input type="number" id="pNeft" placeholder="PT NEFT" value="0">
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">3. Enquiry & Conversion</div>
+        <label>Total Enquiries</label>
         <input type="number" id="enq" value="0">
         <div class="grid-2">
-            <div><label>New Sales</label><input type="number" id="nSale" value="0"></div>
-            <div><label>Renewals</label><input type="number" id="ren" value="0"></div>
+            <input type="number" id="nSale" placeholder="New Sales" value="0">
+            <input type="number" id="ren" placeholder="Renewals" value="0">
         </div>
     </div>
 
     <div class="section">
-        <div class="section-title">3. PT Collection & MOP</div>
-        <div class="grid-2">
-            <div><label>PT Cash</label><input type="number" id="pCash" value="0"></div>
-            <div><label>PT UPI</label><input type="number" id="pUpi" value="0"></div>
-        </div>
-    </div>
-
-    <div class="section">
-        <div class="section-title">4. Personal Collection (Staff)</div>
-        <label>Yasmin</label><input type="number" id="yasmin" value="0">
-        <label>Komal</label><input type="number" id="komal" value="0">
+        <div class="section-title">4. Staff Collection</div>
+        <label>Yuvraj Sir</label><input type="number" id="yuvraj" value="0">
+        <label>Naeem</label><input type="number" id="naeem" value="0">
+        <label>Rohini</label><input type="number" id="rohini" value="0">
     </div>
 
     <button class="btn-main" onclick="processDSR()">GENERATE REPORT</button>
-    <button class="btn-reset" onclick="resetDatabase()">RESET ALL MONTHLY DATA</button>
 </div>
 
 <div id="reportPage" class="container">
-    <div class="header">
-        <h1>FINAL DSR</h1>
-    </div>
+    <div class="header"><h1>FINAL DSR</h1></div>
     <div id="reportDisplay" class="report-box"></div>
     <button class="btn-copy" onclick="copyDSR()">COPY FOR WHATSAPP</button>
     <button class="btn-back" onclick="location.reload()">BACK TO ENTRY</button>
 </div>
 
 <script>
-    // Set current date on load
     document.getElementById('date').valueAsDate = new Date();
 
     function processDSR() {
-        // Get Inputs
-        const dateVal = document.getElementById('date').value;
         const mc = Number(document.getElementById('mCash').value);
         const mu = Number(document.getElementById('mUpi').value);
         const mcard = Number(document.getElementById('mCard').value);
@@ -104,84 +91,68 @@
         
         const pc = Number(document.getElementById('pCash').value);
         const pu = Number(document.getElementById('pUpi').value);
-        
-        const enq = document.getElementById('enq').value;
-        const ns = document.getElementById('nSale').value;
-        const rn = document.getElementById('ren').value;
-        
-        const yas = document.getElementById('yasmin').value;
-        const kom = document.getElementById('komal').value;
+        const pcard = Number(document.getElementById('pCard').value);
+        const pneft = Number(document.getElementById('pNeft').value);
 
-        const todayTotal = mc + mu + mcard + mneft + pc + pu;
+        const todayGym = mc + mu + mcard + mneft;
+        const todayPt = pc + pu + pcard + pneft;
         const todayCash = mc + pc;
         const todayUpi = mu + pu;
 
-        // LOCALSTORAGE LOGIC (TMC Calculation)
         let tmcTotal = Number(localStorage.getItem('taiso_tmc')) || 0;
         let tmcCash = Number(localStorage.getItem('taiso_cash')) || 0;
         let tmcUpi = Number(localStorage.getItem('taiso_upi')) || 0;
 
-        // Add today's data to TMC
-        tmcTotal += todayTotal;
+        tmcTotal += (todayGym + todayPt);
         tmcCash += todayCash;
         tmcUpi += todayUpi;
 
-        // Save back to browser
         localStorage.setItem('taiso_tmc', tmcTotal);
         localStorage.setItem('taiso_cash', tmcCash);
         localStorage.setItem('taiso_upi', tmcUpi);
 
-        // Format Report
-        const reportTemplate = `Date:- ${dateVal}
+        const report = `Date:- ${document.getElementById('date').value}
 
 TMC Till Date : ${tmcTotal.toLocaleString()}/-
 
-Gym today’s collection:- ${(mc+mu+mcard+mneft).toLocaleString()}/-
+Gym today’s collection:- ${todayGym.toLocaleString()}/-
 Cash: ${mc}/-
 Upi: ${mu}/-
 Card credit/Debit: ${mcard}/-
 Neft: ${mneft}/-
 
-Today's PT collection: ${todayPt = pc + pu}/-
+Today's PT collection: ${todayPt.toLocaleString()}/-
 UPI: ${pu}/-
 CASH: ${pc}/-
+CARD: ${pcard}/-
+NEFT: ${pneft}/-
 
-Today's Total Enquires: ${enq}
-Gym membership: ${Number(ns) + Number(rn)}
-No. of renewal: ${rn}
-No. of new sale: ${ns}
+Today's Total Enquires: ${document.getElementById('enq').value}
+Gym membership: ${Number(document.getElementById('nSale').value) + Number(document.getElementById('ren').value)}
+No. of renewal: ${document.getElementById('ren').value}
+No. of new sale: ${document.getElementById('nSale').value}
 
 Total TMC cash: ${tmcCash.toLocaleString()}/-
 Total TMC UPI: ${tmcUpi.toLocaleString()}/-
 
 Personal collection 
-Yasmin: ${yas}/-
-Komal: ${kom}/-
+Yuvraj Sir: ${document.getElementById('yuvraj').value}/-
+Naeem: ${document.getElementById('naeem').value}/-
+Rohini: ${document.getElementById('rohini').value}/-
 
 Shift
 Morning: 
-Evening: Komal mam,`;
+Evening:`;
 
-        document.getElementById('reportDisplay').innerText = reportTemplate;
+        document.getElementById('reportDisplay').innerText = report;
         document.getElementById('entryPage').style.display = 'none';
         document.getElementById('reportPage').style.display = 'block';
-        window.scrollTo(0,0);
     }
 
     function copyDSR() {
-        const text = document.getElementById('reportDisplay').innerText;
-        navigator.clipboard.writeText(text);
-        alert("Taiso DSR Copied!");
-    }
-
-    function resetDatabase() {
-        if(confirm("DANGER: Kya aap poore mahine ka data clear karna chahte hain?")) {
-            localStorage.clear();
-            alert("Database Reset Successfully!");
-            location.reload();
-        }
+        navigator.clipboard.writeText(document.getElementById('reportDisplay').innerText);
+        alert("Report Copied!");
     }
 </script>
-
 </body>
 </html>
