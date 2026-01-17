@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAISO DSR - Final Version</title>
+    <title>TAISO DSR - Final Clean Layout</title>
     <style>
         :root { --gold: #d4af37; --dark-bg: #121212; --card-bg: #1e1e1e; --text: #ffffff; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark-bg); color: var(--text); margin: 0; padding: 15px; }
@@ -20,7 +20,7 @@
         .btn-history { background: #3a3a3a; color: var(--gold); border: 1px solid var(--gold); font-size: 14px; margin-bottom: 10px; }
         .btn-copy { background: #25D366; color: white; }
         #reportPage { display: none; }
-        .report-box { background: white; color: black; padding: 20px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; font-size: 14px; line-height: 1.8; border-left: 5px solid var(--gold); }
+        .report-box { background: white; color: black; padding: 25px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; font-size: 14px; line-height: 1.8; border-left: 5px solid var(--gold); }
         .sync-status { text-align: center; font-size: 12px; color: var(--gold); margin-top: 5px; min-height: 15px; }
     </style>
 </head>
@@ -91,7 +91,7 @@
 
 <script>
     document.getElementById('date').valueAsDate = new Date();
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwCmIDltUPiUXvCA9c8091UkMbFC1UNO2L5pefuM7X5qx7rFkOzuzadjBuPvkVIBFERMQ/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxi2H4wsUg9flyJQABrF3jXh2O4JjdLNUVfkx6b66e1LzEA3-VPE_AOVE44ZHOCicyBJg/exec";
 
     function generateFormat(d, tmc, tmcCash, tmcUpi, tmcCard, tmcNeft, isHistory = false) {
         const todayGym = Number(d.mCash) + Number(d.mUpi) + Number(d.mCard) + Number(d.mNeft);
@@ -104,19 +104,19 @@ TMC Till Date : ${Number(tmc).toLocaleString()}/-
 Gym today’s collection:- ${todayGym.toLocaleString()}/-
 Cash: ${d.mCash}/-
 Upi: ${d.mUpi}/-
-Card credit/Debit: ${d.mCard}/-
+Card: ${d.mCard}/-
 Neft: ${d.mNeft}/-
 
 Today's PT collection: ${todayPt.toLocaleString()}/-
-CASH: ${d.pCash}/-
-UPI: ${d.pUpi}/-
-CARD: ${d.pCard}/-
-NEFT: ${d.pNeft}/-
+Cash: ${d.pCash}/-
+Upi: ${d.pUpi}/-
+Card: ${d.pCard}/-
+Neft: ${d.pNeft}/-
 
-Today's Total Enquires: ${d.enq}
+Today's Total Enquiries: ${d.enq}
 Gym membership: ${Number(d.nSale) + Number(d.ren)}
-No. of new sale: ${d.nSale}
-No. of renewal: ${d.ren}
+New Sale: ${d.nSale}
+Renewal: ${d.ren}
 
 --- TOTAL MONTHLY SUMMARY ---
 Total TMC Cash: ${Number(tmcCash).toLocaleString()}/-
@@ -137,15 +137,15 @@ Evening: ${d.shiftE}`;
     async function fetchHistory() {
         const dateVal = document.getElementById('date').value;
         const status = document.getElementById('status');
-        if(!dateVal) return alert("Select Date First!");
-        status.innerText = "Fetching History...";
+        if(!dateVal) return alert("Select Date!");
+        status.innerText = "Fetching Data...";
         
         try {
             const response = await fetch(`${SCRIPT_URL}?date=${dateVal}`);
             const data = await response.json();
             
             if (data.status === "Not Found") {
-                alert("No entry found!");
+                alert("No entry found for this date!");
                 status.innerText = "";
             } else {
                 const r = data.row;
@@ -161,7 +161,7 @@ Evening: ${d.shiftE}`;
                 document.getElementById('reportPage').style.display = 'block';
                 status.innerText = "";
             }
-        } catch (e) { alert("Error!"); status.innerText=""; }
+        } catch (e) { alert("Error connecting to script!"); status.innerText=""; }
     }
 
     async function processAndSync() {
@@ -191,16 +191,16 @@ Evening: ${d.shiftE}`;
 
         try {
             btn.disabled = true;
-            status.innerText = "Saving Data...";
+            status.innerText = "Saving to Sheet...";
             await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) });
-            alert("Data Saved! Now go to VIEW OLD DSR to see your clean report.");
+            alert("Success! Now use 'VIEW OLD DSR' to see your report.");
             location.reload();
-        } catch (e) { alert("Error!"); btn.disabled=false; }
+        } catch (e) { alert("Save Error!"); btn.disabled=false; }
     }
 
     function copyDSR() {
         navigator.clipboard.writeText(document.getElementById('reportDisplay').innerText);
-        alert("Copied to clipboard!");
+        alert("Report Copied!");
     }
 </script>
 </body>
