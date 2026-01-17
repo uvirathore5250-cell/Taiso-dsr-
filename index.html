@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAISO DSR - Final Control</title>
+    <title>TAISO DSR - Smart Admin</title>
     <style>
         :root { --gold: #d4af37; --dark-bg: #121212; --card-bg: #1e1e1e; --text: #ffffff; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark-bg); color: var(--text); margin: 0; padding: 15px; }
@@ -19,7 +19,7 @@
         .btn-main { background: var(--gold); color: black; }
         .btn-history { background: #3a3a3a; color: var(--gold); border: 1px solid var(--gold); font-size: 14px; margin-bottom: 10px; }
         .btn-copy { background: #25D366; color: white; }
-        .btn-reset { background: #ff4444; color: white; font-size: 12px; margin-top: 30px; border: 1px solid #700; }
+        .btn-reset { background: #ff4444; color: white; font-size: 12px; margin-top: 30px; border: 1px solid #700; opacity: 0.7; }
         #reportPage { display: none; }
         .report-box { background: white; color: black; padding: 20px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; font-size: 13px; line-height: 1.4; border-left: 5px solid var(--gold); }
         .sync-status { text-align: center; font-size: 12px; color: var(--gold); margin-top: 5px; min-height: 15px; }
@@ -82,7 +82,7 @@
     <button class="btn-main" id="submitBtn" onclick="processAndSync()">SAVE & GENERATE REPORT</button>
     <div id="status" class="sync-status"></div>
 
-    <button class="btn-reset" onclick="hardReset()">RESET APP (CLEAR TMC)</button>
+    <button class="btn-reset" onclick="hardReset()">RESET APP MEMORY</button>
 </div>
 
 <div id="reportPage" class="container">
@@ -94,7 +94,8 @@
 
 <script>
     document.getElementById('date').valueAsDate = new Date();
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw-40W81HdJbnZHC1DaLG4Gkl6KFo6n6D8rf7B1JEy7tWmrTDT91dsPcO16u97qiDIZZA/exec";
+    // Your specific Script URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxZ12i977mP7P1y0Xwr7scV7dZz_TPgyh3tP-WDXngEXl84I8Hrj1MRhggYrPeEw8-JxQ/exec";
 
     function generateFormat(d, tmc, tmcCash, tmcUpi, isHistory = false) {
         const todayGym = Number(d.mCash) + Number(d.mUpi) + Number(d.mCard) + Number(d.mNeft);
@@ -137,15 +138,16 @@ Evening: ${d.shiftE}`;
     async function fetchHistory() {
         const dateVal = document.getElementById('date').value;
         const status = document.getElementById('status');
-        if(!dateVal) return alert("Select Date First!");
-        status.innerText = "Fetching History...";
+        if(!dateVal) return alert("Please select a date!");
+        
+        status.innerText = "Accessing Cloud Data...";
         
         try {
             const response = await fetch(`${SCRIPT_URL}?date=${dateVal}`);
             const data = await response.json();
             
             if (data.status === "Not Found") {
-                alert("No entry found for this date in Sheet!");
+                alert("Entry not found in Google Sheet for this date.");
                 status.innerText = "";
             } else {
                 const r = data.row;
@@ -156,17 +158,23 @@ Evening: ${d.shiftE}`;
                     yuvraj: r[12], naeem: r[13], rohini: r[14],
                     shiftM: r[15], shiftE: r[16]
                 };
+
+                // The script now returns tmcTotal including Card/Neft
                 document.getElementById('reportDisplay').innerText = generateFormat(d, data.tmcTotal, data.tmcCash, data.tmcUpi, true);
                 document.getElementById('entryPage').style.display = 'none';
                 document.getElementById('reportPage').style.display = 'block';
                 status.innerText = "";
             }
-        } catch (e) { alert("Error!"); status.innerText=""; }
+        } catch (e) {
+            alert("Connection error. Ensure your Script is deployed as 'Anyone'.");
+            status.innerText = "";
+        }
     }
 
     async function processAndSync() {
         const btn = document.getElementById('submitBtn');
         const status = document.getElementById('status');
+        
         const d = {
             date: document.getElementById('date').value,
             mCash: document.getElementById('mCash').value || 0,
@@ -186,14 +194,17 @@ Evening: ${d.shiftE}`;
             shiftM: document.getElementById('staffMorning').value || "-",
             shiftE: document.getElementById('staffEvening').value || "-"
         };
+
         const todayTotal = Number(d.mCash) + Number(d.mUpi) + Number(d.mCard) + Number(d.mNeft) + Number(d.pCash) + Number(d.pUpi) + Number(d.pCard) + Number(d.pNeft);
         d.todayTotal = todayTotal;
 
         try {
             btn.disabled = true;
-            status.innerText = "Saving to Google Sheet...";
+            status.innerText = "Syncing with Cloud Database...";
+            
             await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) });
 
+            // Local Calculation for immediate report
             let tmc = Number(localStorage.getItem('taiso_tmc')) || 0;
             let tmcC = Number(localStorage.getItem('taiso_cash')) || 0;
             let tmcU = Number(localStorage.getItem('taiso_upi')) || 0;
@@ -209,20 +220,24 @@ Evening: ${d.shiftE}`;
             document.getElementById('reportDisplay').innerText = generateFormat(d, tmc, tmcC, tmcU);
             document.getElementById('entryPage').style.display = 'none';
             document.getElementById('reportPage').style.display = 'block';
-        } catch (e) { alert("Sync Error!"); btn.disabled=false; }
+            status.innerText = "";
+
+        } catch (e) {
+            alert("Sync Failed! Check internet.");
+            btn.disabled = false;
+        }
     }
 
     function hardReset() {
-        if(confirm("DANGER: This will reset your phone's TMC to 0. Continue?")) {
+        if(confirm("This will clear phone memory. Sheet data remains safe. Proceed?")) {
             localStorage.clear();
-            alert("App Memory Cleared!");
             location.reload();
         }
     }
 
     function copyDSR() {
         navigator.clipboard.writeText(document.getElementById('reportDisplay').innerText);
-        alert("Copied!");
+        alert("Report Copied!");
     }
 </script>
 </body>
