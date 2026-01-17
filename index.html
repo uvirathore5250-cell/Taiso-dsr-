@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAISO DSR - Cloud Sync</title>
+    <title>TAISO DSR - Cloud Sync & Reset</title>
     <style>
         :root { --gold: #d4af37; --dark-bg: #121212; --card-bg: #1e1e1e; --text: #ffffff; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark-bg); color: var(--text); margin: 0; padding: 15px; }
@@ -15,13 +15,13 @@
         label { display: block; font-size: 11px; margin-bottom: 5px; color: #888; text-transform: uppercase; }
         input { width: 100%; padding: 12px; margin-bottom: 10px; box-sizing: border-box; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 6px; font-size: 16px; text-align: center; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        button { width: 100%; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; transition: 0.3s; }
+        button { width: 100%; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
         .btn-main { background: var(--gold); color: black; }
-        .btn-main:disabled { background: #555; cursor: not-allowed; }
         .btn-copy { background: #25D366; color: white; }
+        .btn-reset { background: #ff4444; color: white; font-size: 12px; margin-top: 30px; opacity: 0.8; }
         #reportPage { display: none; }
         .report-box { background: white; color: black; padding: 20px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; font-size: 13px; line-height: 1.4; border-left: 5px solid var(--gold); }
-        .sync-status { text-align: center; font-size: 12px; color: var(--gold); margin-top: 5px; min-height: 15px; }
+        .sync-status { text-align: center; font-size: 12px; color: var(--gold); margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -35,44 +35,46 @@
     </div>
 
     <div class="section">
-        <div class="section-title">1. Membership Sale & MOP</div>
+        <div class="section-title">1. Membership Sale</div>
         <div class="grid-2">
-            <div><label>Cash</label><input type="number" id="mCash" placeholder="0"></div>
-            <div><label>UPI</label><input type="number" id="mUpi" placeholder="0"></div>
-            <div><label>Card</label><input type="number" id="mCard" placeholder="0"></div>
-            <div><label>NEFT</label><input type="number" id="mNeft" placeholder="0"></div>
+            <div><label>Cash</label><input type="number" id="mCash" value="0"></div>
+            <div><label>UPI</label><input type="number" id="mUpi" value="0"></div>
+            <div><label>Card</label><input type="number" id="mCard" value="0"></div>
+            <div><label>NEFT</label><input type="number" id="mNeft" value="0"></div>
         </div>
     </div>
 
     <div class="section">
-        <div class="section-title">2. PT Collection & MOP</div>
+        <div class="section-title">2. PT Collection</div>
         <div class="grid-2">
-            <div><label>Cash</label><input type="number" id="pCash" placeholder="0"></div>
-            <div><label>UPI</label><input type="number" id="pUpi" placeholder="0"></div>
-            <div><label>Card</label><input type="number" id="pCard" placeholder="0"></div>
-            <div><label>NEFT</label><input type="number" id="pNeft" placeholder="0"></div>
+            <div><label>Cash</label><input type="number" id="pCash" value="0"></div>
+            <div><label>UPI</label><input type="number" id="pUpi" value="0"></div>
+            <div><label>Card</label><input type="number" id="pCard" value="0"></div>
+            <div><label>NEFT</label><input type="number" id="pNeft" value="0"></div>
         </div>
     </div>
 
     <div class="section">
         <div class="section-title">3. Enquiry & Conversion</div>
         <label>Total Enquiries</label>
-        <input type="number" id="enq" placeholder="0">
+        <input type="number" id="enq" value="0">
         <div class="grid-2">
-            <div><label>New Sales</label><input type="number" id="nSale" placeholder="0"></div>
-            <div><label>Renewals</label><input type="number" id="ren" placeholder="0"></div>
+            <div><label>New Sales</label><input type="number" id="nSale" value="0"></div>
+            <div><label>Renewals</label><input type="number" id="ren" value="0"></div>
         </div>
     </div>
 
     <div class="section">
         <div class="section-title">4. Personal Collection (Staff)</div>
-        <label>Yuvraj Sir</label><input type="number" id="yuvraj" placeholder="0">
-        <label>Naeem</label><input type="number" id="naeem" placeholder="0">
-        <label>Rohini</label><input type="number" id="rohini" placeholder="0">
+        <label>Yuvraj Sir</label><input type="number" id="yuvraj" value="0">
+        <label>Naeem</label><input type="number" id="naeem" value="0">
+        <label>Rohini</label><input type="number" id="rohini" value="0">
     </div>
 
     <button class="btn-main" id="submitBtn" onclick="processAndSync()">SAVE & GENERATE REPORT</button>
     <div id="status" class="sync-status"></div>
+
+    <button class="btn-reset" onclick="hardReset()">RESET MONTHLY DATA (CLEAR TMC)</button>
 </div>
 
 <div id="reportPage" class="container">
@@ -84,15 +86,12 @@
 
 <script>
     document.getElementById('date').valueAsDate = new Date();
-    
-    // Your Google Apps Script Web App URL
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxlb1gxZNeFtsjcjecHDlwC2XNZpf7M-VGOd4L8jylzczCTf4mo2ry9y25Po12HZ5eqIQ/exec";
 
     async function processAndSync() {
         const btn = document.getElementById('submitBtn');
         const status = document.getElementById('status');
         
-        // Collect Data
         const d = {
             date: document.getElementById('date').value,
             mCash: Number(document.getElementById('mCash').value) || 0,
@@ -119,75 +118,43 @@
             btn.disabled = true;
             status.innerText = "Syncing with Google Sheets...";
             
-            // Send to Google Sheets
-            await fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify(d)
-            });
+            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) });
 
-            // LocalStorage Logic for TMC
-            let tmcTotal = Number(localStorage.getItem('taiso_tmc')) || 0;
+            let tmc = Number(localStorage.getItem('taiso_tmc')) || 0;
             let tmcCash = Number(localStorage.getItem('taiso_cash')) || 0;
             let tmcUpi = Number(localStorage.getItem('taiso_upi')) || 0;
 
-            tmcTotal += d.todayTotal;
+            tmc += d.todayTotal;
             tmcCash += (d.mCash + d.pCash);
             tmcUpi += (d.mUpi + d.pUpi);
 
-            localStorage.setItem('taiso_tmc', tmcTotal);
+            localStorage.setItem('taiso_tmc', tmc);
             localStorage.setItem('taiso_cash', tmcCash);
             localStorage.setItem('taiso_upi', tmcUpi);
 
-            // Create WhatsApp Format
-            const report = `Date:- ${d.date}
-
-TMC Till Date : ${tmcTotal.toLocaleString()}/-
-
-Gym today’s collection:- ${todayGym.toLocaleString()}/-
-Cash: ${d.mCash}/-
-Upi: ${d.mUpi}/-
-Card: ${d.mCard}/-
-Neft: ${d.mNeft}/-
-
-Today's PT collection: ${todayPt.toLocaleString()}/-
-UPI: ${d.pUpi}/-
-CASH: ${d.pCash}/-
-CARD: ${d.pCard}/-
-NEFT: ${d.pNeft}/-
-
-Today's Total Enquires: ${d.enq}
-Gym membership: ${Number(d.nSale) + Number(d.ren)}
-No. of renewal: ${d.ren}
-No. of new sale: ${d.nSale}
-
-Total TMC cash: ${tmcCash.toLocaleString()}/-
-Total TMC UPI: ${tmcUpi.toLocaleString()}/-
-
-Personal collection 
-Yuvraj Sir: ${d.yuvraj}/-
-Naeem: ${d.naeem}/-
-Rohini: ${d.rohini}/-
-
-Shift
-Morning: 
-Evening:`;
-
+            const report = `Date:- ${d.date}\n\nTMC Till Date : ${tmc.toLocaleString()}/-\n\nGym Collection: ${todayGym.toLocaleString()}/-\nPT Collection: ${todayPt.toLocaleString()}/-\n\nEnquiries: ${d.enq}\nNew Sales: ${d.nSale}\nRenewals: ${d.ren}\n\nTotal TMC cash: ${tmcCash.toLocaleString()}/-\nTotal TMC UPI: ${tmcUpi.toLocaleString()}/-\n\nPersonal collection \nYuvraj Sir: ${d.yuvraj}/-\nNaeem: ${d.naeem}/-\nRohini: ${d.rohini}/-`;
+            
             document.getElementById('reportDisplay').innerText = report;
             document.getElementById('entryPage').style.display = 'none';
             document.getElementById('reportPage').style.display = 'block';
 
         } catch (e) {
-            console.error(e);
-            alert("Sync Failed! Check connection.");
+            alert("Error!");
             btn.disabled = false;
-            status.innerText = "";
+        }
+    }
+
+    function hardReset() {
+        if(confirm("DANGER: Kya aap TMC data reset karna chahte hain? Isse aapka 1 Jan se ab tak ka total ZERO ho jayega.")) {
+            localStorage.clear();
+            alert("All monthly totals have been reset to zero.");
+            location.reload();
         }
     }
 
     function copyDSR() {
         navigator.clipboard.writeText(document.getElementById('reportDisplay').innerText);
-        alert("Report Copied!");
+        alert("Copied!");
     }
 </script>
 </body>
