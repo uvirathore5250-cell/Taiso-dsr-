@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taiso DSR - Admin</title>
+    <style>
+        :root {
+            --primary: #d4af37;
+            --dark: #1a1a1a;
+            --light: #f4f4f4;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--dark); color: white; margin: 0; padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: #222; padding: 20px; border-radius: 15px; border: 1px solid var(--primary); }
+        h2 { text-align: center; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; }
+        .section { margin-bottom: 20px; padding: 15px; background: #2d2d2d; border-radius: 8px; }
+        .section-title { font-weight: bold; margin-bottom: 10px; color: var(--primary); border-bottom: 1px solid #444; padding-bottom: 5px; }
+        label { display: block; margin: 8px 0 4px; font-size: 0.9em; }
+        input { width: 100%; padding: 10px; box-sizing: border-box; background: #3d3d3d; border: 1px solid #555; color: white; border-radius: 5px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        button { width: 100%; padding: 15px; background: var(--primary); border: none; color: black; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 20px; font-size: 1em; }
+        #reportPage { display: none; background: #fff; color: #000; padding: 20px; border-radius: 10px; white-space: pre-wrap; font-family: monospace; }
+        .back-btn { background: #555; color: white; margin-top: 10px; }
+        .copy-btn { background: #25D366; color: white; }
+    </style>
+</head>
+<body>
+
+<div id="entryPage" class="container">
+    <h2>Taiso DSR Entry</h2>
+    
+    <div class="section">
+        <label>Date</label>
+        <input type="date" id="date" value="2026-01-17">
+    </div>
+
+    <div class="section">
+        <div class="section-title">Membership Sale</div>
+        <label>Total Membership Amount</label>
+        <input type="number" id="gymTotal" placeholder="e.g. 15000">
+        <div class="grid">
+            <div><label>Cash</label><input type="number" id="gymCash" value="0"></div>
+            <div><label>UPI</label><input type="number" id="gymUpi" value="0"></div>
+            <div><label>Card</label><input type="number" id="gymCard" value="0"></div>
+            <div><label>Other (NEFT)</label><input type="number" id="gymNeft" value="0"></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Sales & Enquiries</div>
+        <div class="grid">
+            <div><label>Enquiries</label><input type="number" id="enq" value="0"></div>
+            <div><label>New Sales</label><input type="number" id="newSale" value="0"></div>
+            <div><label>Renewals</label><input type="number" id="renewal" value="0"></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Personal Training (PT)</div>
+        <label>Today's PT Collection</label>
+        <input type="number" id="ptTotal" value="0">
+        <div class="grid">
+            <div><label>PT Cash</label><input type="number" id="ptCash" value="0"></div>
+            <div><label>PT UPI</label><input type="number" id="ptUpi" value="0"></div>
+            <div><label>PT Card</label><input type="number" id="ptCard" value="0"></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Staff Collection</div>
+        <label>Yasmin</label><input type="number" id="yasmin" value="0">
+        <label>Komal</label><input type="number" id="komal" value="0">
+        <label>Sahil</label><input type="number" id="sahil" value="0">
+    </div>
+
+    <button onclick="generateReport()">Generate Final Report</button>
+</div>
+
+<div id="reportPage" class="container">
+    <div id="reportContent"></div>
+    <button class="copy-btn" onclick="copyReport()">Copy for WhatsApp</button>
+    <button class="back-btn" onclick="goBack()">Edit Entry</button>
+</div>
+
+<script>
+    function generateReport() {
+        const date = document.getElementById('date').value;
+        const gymTotal = document.getElementById('gymTotal').value || 0;
+        const gymCash = document.getElementById('gymCash').value || 0;
+        const gymUpi = document.getElementById('gymUpi').value || 0;
+        const gymCard = Number(document.getElementById('gymCard').value) + Number(document.getElementById('gymNeft').value);
+        
+        const ptTotal = document.getElementById('ptTotal').value || 0;
+        const ptCash = document.getElementById('ptCash').value || 0;
+        const ptUpi = document.getElementById('ptUpi').value || 0;
+        const ptCard = document.getElementById('ptCard').value || 0;
+
+        const enq = document.getElementById('enq').value || 0;
+        const nSale = document.getElementById('newSale').value || 0;
+        const ren = document.getElementById('renewal').value || 0;
+
+        const yasmin = document.getElementById('yasmin').value || 0;
+        const komal = document.getElementById('komal').value || 0;
+
+        // Note: TMC calculations would normally come from a database. 
+        // Here we are showing the format as requested.
+        const report = `Date:- ${date}
+
+TMC Till Date : [Auto-Calculated]/-
+
+Gym today’s collection:- ${gymTotal}/-
+Cash: ${gymCash}/-
+Upi: ${gymUpi}/-
+Cheque: 
+Card credit/Debit: ${gymCard}/-
+Neft: 
+
+
+Total PT Collection: 
+Today's PT collection: ${ptTotal}/-
+UPI: ${ptUpi}/-
+CASH: ${ptCash}/-
+CARD: ${ptCard}/-
+
+Transfer fee: 
+Freeze: 
+Locker: 
+
+Today's Total Enquires [prospect]: ${enq}
+Gym membership: ${Number(nSale) + Number(ren)}
+No. of renewal: ${ren}
+No. of new sale: ${nSale}
+
+Total TMC cash: [TBD]
+Total TMC UPI: [TBD]
+
+Personal collection 
+Yasmin: ${yasmin}/-
+Komal: ${komal}/-
+Sahil: 
+
+Shift
+Morning: 
+Evening: Komal mam,`;
+
+        document.getElementById('reportContent').innerText = report;
+        document.getElementById('entryPage').style.display = 'none';
+        document.getElementById('reportPage').style.display = 'block';
+    }
+
+    function goBack() {
+        document.getElementById('entryPage').style.display = 'block';
+        document.getElementById('reportPage').style.display = 'none';
+    }
+
+    function copyReport() {
+        const text = document.getElementById('reportContent').innerText;
+        navigator.clipboard.writeText(text);
+        alert("Report copied! Now paste in WhatsApp.");
+    }
+</script>
+
+</body>
+</html>
