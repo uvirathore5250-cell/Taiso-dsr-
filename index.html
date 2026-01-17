@@ -13,7 +13,7 @@
         .section { background: var(--card-bg); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #333; }
         .section-title { color: var(--gold); font-weight: bold; margin-bottom: 12px; font-size: 14px; text-transform: uppercase; border-left: 3px solid var(--gold); padding-left: 8px; }
         label { display: block; font-size: 12px; margin-bottom: 5px; color: #bbb; }
-        input { width: 100%; padding: 12px; margin-bottom: 10px; box-sizing: border-box; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 6px; font-size: 16px; }
+        input { width: 100%; padding: 12px; margin-bottom: 10px; box-sizing: border-box; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 6px; font-size: 16px; text-align: center; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         button { width: 100%; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
         .btn-main { background: var(--gold); color: black; }
@@ -36,45 +36,45 @@
     <div class="section">
         <div class="section-title">1. Membership Sale & MOP</div>
         <div class="grid-2">
-            <input type="number" id="mCash" placeholder="Cash" value="0">
-            <input type="number" id="mUpi" placeholder="UPI" value="0">
-            <input type="number" id="mCard" placeholder="Card" value="0">
-            <input type="number" id="mNeft" placeholder="NEFT" value="0">
+            <div><label>Cash</label><input type="number" id="mCash" placeholder="0"></div>
+            <div><label>UPI</label><input type="number" id="mUpi" placeholder="0"></div>
+            <div><label>Card</label><input type="number" id="mCard" placeholder="0"></div>
+            <div><label>NEFT</label><input type="number" id="mNeft" placeholder="0"></div>
         </div>
     </div>
 
     <div class="section">
         <div class="section-title">2. PT Collection & MOP</div>
         <div class="grid-2">
-            <input type="number" id="pCash" placeholder="PT Cash" value="0">
-            <input type="number" id="pUpi" placeholder="PT UPI" value="0">
-            <input type="number" id="pCard" placeholder="PT Card" value="0">
-            <input type="number" id="pNeft" placeholder="PT NEFT" value="0">
+            <div><label>Cash</label><input type="number" id="pCash" placeholder="0"></div>
+            <div><label>UPI</label><input type="number" id="pUpi" placeholder="0"></div>
+            <div><label>Card</label><input type="number" id="pCard" placeholder="0"></div>
+            <div><label>NEFT</label><input type="number" id="pNeft" placeholder="0"></div>
         </div>
     </div>
 
     <div class="section">
         <div class="section-title">3. Enquiry & Conversion</div>
         <label>Total Enquiries</label>
-        <input type="number" id="enq" value="0">
+        <input type="number" id="enq" placeholder="0">
         <div class="grid-2">
-            <input type="number" id="nSale" placeholder="New Sales" value="0">
-            <input type="number" id="ren" placeholder="Renewals" value="0">
+            <div><label>New Sales</label><input type="number" id="nSale" placeholder="0"></div>
+            <div><label>Renewals</label><input type="number" id="ren" placeholder="0"></div>
         </div>
     </div>
 
     <div class="section">
         <div class="section-title">4. Staff Collection</div>
-        <label>Yuvraj Sir</label><input type="number" id="yuvraj" value="0">
-        <label>Naeem</label><input type="number" id="naeem" value="0">
-        <label>Rohini</label><input type="number" id="rohini" value="0">
+        <label>Yuvraj Sir</label><input type="number" id="yuvraj" placeholder="0">
+        <label>Naeem</label><input type="number" id="naeem" placeholder="0">
+        <label>Rohini</label><input type="number" id="rohini" placeholder="0">
     </div>
 
     <button class="btn-main" onclick="processDSR()">GENERATE REPORT</button>
 </div>
 
 <div id="reportPage" class="container">
-    <div class="header"><h1>FINAL DSR</h1></div>
+    <div class="header"><h1>FINAL REPORT</h1></div>
     <div id="reportDisplay" class="report-box"></div>
     <button class="btn-copy" onclick="copyDSR()">COPY FOR WHATSAPP</button>
     <button class="btn-back" onclick="location.reload()">BACK TO ENTRY</button>
@@ -84,15 +84,15 @@
     document.getElementById('date').valueAsDate = new Date();
 
     function processDSR() {
-        const mc = Number(document.getElementById('mCash').value);
-        const mu = Number(document.getElementById('mUpi').value);
-        const mcard = Number(document.getElementById('mCard').value);
-        const mneft = Number(document.getElementById('mNeft').value);
+        const mc = Number(document.getElementById('mCash').value) || 0;
+        const mu = Number(document.getElementById('mUpi').value) || 0;
+        const mcard = Number(document.getElementById('mCard').value) || 0;
+        const mneft = Number(document.getElementById('mNeft').value) || 0;
         
-        const pc = Number(document.getElementById('pCash').value);
-        const pu = Number(document.getElementById('pUpi').value);
-        const pcard = Number(document.getElementById('pCard').value);
-        const pneft = Number(document.getElementById('pNeft').value);
+        const pc = Number(document.getElementById('pCash').value) || 0;
+        const pu = Number(document.getElementById('pUpi').value) || 0;
+        const pcard = Number(document.getElementById('pCard').value) || 0;
+        const pneft = Number(document.getElementById('pNeft').value) || 0;
 
         const todayGym = mc + mu + mcard + mneft;
         const todayPt = pc + pu + pcard + pneft;
@@ -118,7 +118,7 @@ TMC Till Date : ${tmcTotal.toLocaleString()}/-
 Gym today’s collection:- ${todayGym.toLocaleString()}/-
 Cash: ${mc}/-
 Upi: ${mu}/-
-Card credit/Debit: ${mcard}/-
+Card: ${mcard}/-
 Neft: ${mneft}/-
 
 Today's PT collection: ${todayPt.toLocaleString()}/-
