@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAISO DSR - Admin</title>
+    <title>TAISO DSR - Cloud Sync</title>
     <style>
         :root { --gold: #d4af37; --dark-bg: #121212; --card-bg: #1e1e1e; --text: #ffffff; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark-bg); color: var(--text); margin: 0; padding: 15px; }
@@ -12,15 +12,15 @@
         .header h1 { color: var(--gold); margin: 0; font-size: 24px; letter-spacing: 2px; }
         .section { background: var(--card-bg); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #333; }
         .section-title { color: var(--gold); font-weight: bold; margin-bottom: 12px; font-size: 14px; text-transform: uppercase; border-left: 3px solid var(--gold); padding-left: 8px; }
-        label { display: block; font-size: 12px; margin-bottom: 5px; color: #bbb; }
+        label { display: block; font-size: 11px; margin-bottom: 5px; color: #888; text-transform: uppercase; }
         input { width: 100%; padding: 12px; margin-bottom: 10px; box-sizing: border-box; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 6px; font-size: 16px; text-align: center; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         button { width: 100%; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
         .btn-main { background: var(--gold); color: black; }
         .btn-copy { background: #25D366; color: white; }
-        .btn-back { background: #444; color: white; }
         #reportPage { display: none; }
-        .report-box { background: white; color: black; padding: 20px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; font-size: 13px; line-height: 1.4; border-left: 5px solid var(--gold); }
+        .report-box { background: white; color: black; padding: 20px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; font-size: 13px; line-height: 1.4; }
+        .sync-status { text-align: center; font-size: 12px; color: var(--gold); margin-top: 5px; }
     </style>
 </head>
 <body>
@@ -34,124 +34,113 @@
     </div>
 
     <div class="section">
-        <div class="section-title">1. Membership Sale & MOP</div>
+        <div class="section-title">1. Membership Sale</div>
         <div class="grid-2">
-            <div><label>Cash</label><input type="number" id="mCash" placeholder="0"></div>
-            <div><label>UPI</label><input type="number" id="mUpi" placeholder="0"></div>
-            <div><label>Card</label><input type="number" id="mCard" placeholder="0"></div>
-            <div><label>NEFT</label><input type="number" id="mNeft" placeholder="0"></div>
+            <div><label>Cash</label><input type="number" id="mCash" value="0"></div>
+            <div><label>UPI</label><input type="number" id="mUpi" value="0"></div>
+            <div><label>Card</label><input type="number" id="mCard" value="0"></div>
+            <div><label>NEFT</label><input type="number" id="mNeft" value="0"></div>
         </div>
     </div>
 
     <div class="section">
-        <div class="section-title">2. PT Collection & MOP</div>
+        <div class="section-title">2. PT Collection</div>
         <div class="grid-2">
-            <div><label>Cash</label><input type="number" id="pCash" placeholder="0"></div>
-            <div><label>UPI</label><input type="number" id="pUpi" placeholder="0"></div>
-            <div><label>Card</label><input type="number" id="pCard" placeholder="0"></div>
-            <div><label>NEFT</label><input type="number" id="pNeft" placeholder="0"></div>
+            <div><label>Cash</label><input type="number" id="pCash" value="0"></div>
+            <div><label>UPI</label><input type="number" id="pUpi" value="0"></div>
+            <div><label>Card</label><input type="number" id="pCard" value="0"></div>
+            <div><label>NEFT</label><input type="number" id="pNeft" value="0"></div>
         </div>
     </div>
 
     <div class="section">
         <div class="section-title">3. Enquiry & Conversion</div>
         <label>Total Enquiries</label>
-        <input type="number" id="enq" placeholder="0">
+        <input type="number" id="enq" value="0">
         <div class="grid-2">
-            <div><label>New Sales</label><input type="number" id="nSale" placeholder="0"></div>
-            <div><label>Renewals</label><input type="number" id="ren" placeholder="0"></div>
+            <div><label>New Sales</label><input type="number" id="nSale" value="0"></div>
+            <div><label>Renewals</label><input type="number" id="ren" value="0"></div>
         </div>
     </div>
 
     <div class="section">
         <div class="section-title">4. Staff Collection</div>
-        <label>Yuvraj Sir</label><input type="number" id="yuvraj" placeholder="0">
-        <label>Naeem</label><input type="number" id="naeem" placeholder="0">
-        <label>Rohini</label><input type="number" id="rohini" placeholder="0">
+        <label>Yuvraj Sir</label><input type="number" id="yuvraj" value="0">
+        <label>Naeem</label><input type="number" id="naeem" value="0">
+        <label>Rohini</label><input type="number" id="rohini" value="0">
     </div>
 
-    <button class="btn-main" onclick="processDSR()">GENERATE REPORT</button>
+    <button class="btn-main" id="submitBtn" onclick="processAndSync()">SAVE TO SHEET & GENERATE</button>
+    <div id="status" class="sync-status"></div>
 </div>
 
 <div id="reportPage" class="container">
     <div class="header"><h1>FINAL REPORT</h1></div>
     <div id="reportDisplay" class="report-box"></div>
     <button class="btn-copy" onclick="copyDSR()">COPY FOR WHATSAPP</button>
-    <button class="btn-back" onclick="location.reload()">BACK TO ENTRY</button>
+    <button class="btn-main" onclick="location.reload()">NEXT ENTRY</button>
 </div>
 
 <script>
     document.getElementById('date').valueAsDate = new Date();
+    const SCRIPT_URL = "APNA_GOOGLE_SCRIPT_URL_YAHAN_PASTE_KAREIN"; // <--- PASTE HERE
 
-    function processDSR() {
-        const mc = Number(document.getElementById('mCash').value) || 0;
-        const mu = Number(document.getElementById('mUpi').value) || 0;
-        const mcard = Number(document.getElementById('mCard').value) || 0;
-        const mneft = Number(document.getElementById('mNeft').value) || 0;
+    async function processAndSync() {
+        const btn = document.getElementById('submitBtn');
+        const status = document.getElementById('status');
         
-        const pc = Number(document.getElementById('pCash').value) || 0;
-        const pu = Number(document.getElementById('pUpi').value) || 0;
-        const pcard = Number(document.getElementById('pCard').value) || 0;
-        const pneft = Number(document.getElementById('pNeft').value) || 0;
+        // Data Collection
+        const d = {
+            date: document.getElementById('date').value,
+            mCash: Number(document.getElementById('mCash').value) || 0,
+            mUpi: Number(document.getElementById('mUpi').value) || 0,
+            mCard: Number(document.getElementById('mCard').value) || 0,
+            mNeft: Number(document.getElementById('mNeft').value) || 0,
+            pCash: Number(document.getElementById('pCash').value) || 0,
+            pUpi: Number(document.getElementById('pUpi').value) || 0,
+            pCard: Number(document.getElementById('pCard').value) || 0,
+            pNeft: Number(document.getElementById('pNeft').value) || 0,
+            enq: document.getElementById('enq').value || 0,
+            nSale: document.getElementById('nSale').value || 0,
+            ren: document.getElementById('ren').value || 0,
+            yuvraj: document.getElementById('yuvraj').value || 0,
+            naeem: document.getElementById('naeem').value || 0,
+            rohini: document.getElementById('rohini').value || 0
+        };
+        d.todayTotal = d.mCash + d.mUpi + d.mCard + d.mNeft + d.pCash + d.pUpi + d.pCard + d.pNeft;
 
-        const todayGym = mc + mu + mcard + mneft;
-        const todayPt = pc + pu + pcard + pneft;
-        const todayCash = mc + pc;
-        const todayUpi = mu + pu;
+        try {
+            btn.disabled = true;
+            status.innerText = "Syncing with Google Sheets...";
+            
+            // Sync with Google Sheet
+            await fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify(d)
+            });
 
-        let tmcTotal = Number(localStorage.getItem('taiso_tmc')) || 0;
-        let tmcCash = Number(localStorage.getItem('taiso_cash')) || 0;
-        let tmcUpi = Number(localStorage.getItem('taiso_upi')) || 0;
+            // LocalStorage for TMC
+            let tmc = Number(localStorage.getItem('taiso_tmc')) || 0;
+            tmc += d.todayTotal;
+            localStorage.setItem('taiso_tmc', tmc);
 
-        tmcTotal += (todayGym + todayPt);
-        tmcCash += todayCash;
-        tmcUpi += todayUpi;
+            // Show Report
+            const report = `Date:- ${d.date}\nTMC Till Date : ${tmc.toLocaleString()}/-\n\nGym Collection: ${d.mCash+d.mUpi+d.mCard+d.mNeft}\nPT Collection: ${d.pCash+d.pUpi+d.pCard+d.pNeft}\n\nEnquiries: ${d.enq}\nNew Sales: ${d.nSale}\nRenewals: ${d.ren}\n\nStaff:\nYuvraj: ${d.yuvraj}\nNaeem: ${d.naeem}\nRohini: ${d.rohini}`;
+            
+            document.getElementById('reportDisplay').innerText = report;
+            document.getElementById('entryPage').style.display = 'none';
+            document.getElementById('reportPage').style.display = 'block';
 
-        localStorage.setItem('taiso_tmc', tmcTotal);
-        localStorage.setItem('taiso_cash', tmcCash);
-        localStorage.setItem('taiso_upi', tmcUpi);
-
-        const report = `Date:- ${document.getElementById('date').value}
-
-TMC Till Date : ${tmcTotal.toLocaleString()}/-
-
-Gym today’s collection:- ${todayGym.toLocaleString()}/-
-Cash: ${mc}/-
-Upi: ${mu}/-
-Card: ${mcard}/-
-Neft: ${mneft}/-
-
-Today's PT collection: ${todayPt.toLocaleString()}/-
-UPI: ${pu}/-
-CASH: ${pc}/-
-CARD: ${pcard}/-
-NEFT: ${pneft}/-
-
-Today's Total Enquires: ${document.getElementById('enq').value}
-Gym membership: ${Number(document.getElementById('nSale').value) + Number(document.getElementById('ren').value)}
-No. of renewal: ${document.getElementById('ren').value}
-No. of new sale: ${document.getElementById('nSale').value}
-
-Total TMC cash: ${tmcCash.toLocaleString()}/-
-Total TMC UPI: ${tmcUpi.toLocaleString()}/-
-
-Personal collection 
-Yuvraj Sir: ${document.getElementById('yuvraj').value}/-
-Naeem: ${document.getElementById('naeem').value}/-
-Rohini: ${document.getElementById('rohini').value}/-
-
-Shift
-Morning: 
-Evening:`;
-
-        document.getElementById('reportDisplay').innerText = report;
-        document.getElementById('entryPage').style.display = 'none';
-        document.getElementById('reportPage').style.display = 'block';
+        } catch (e) {
+            alert("Error syncing data!");
+            btn.disabled = false;
+        }
     }
 
     function copyDSR() {
         navigator.clipboard.writeText(document.getElementById('reportDisplay').innerText);
-        alert("Report Copied!");
+        alert("Copied!");
     }
 </script>
 </body>
