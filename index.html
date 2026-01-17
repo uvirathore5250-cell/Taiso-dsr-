@@ -3,160 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taiso DSR - Admin</title>
+    <title>TAISO DSR - Admin Control</title>
     <style>
-        :root {
-            --primary: #d4af37;
-            --dark: #1a1a1a;
-            --light: #f4f4f4;
-        }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--dark); color: white; margin: 0; padding: 20px; }
-        .container { max-width: 500px; margin: auto; background: #222; padding: 20px; border-radius: 15px; border: 1px solid var(--primary); }
-        h2 { text-align: center; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; }
-        .section { margin-bottom: 20px; padding: 15px; background: #2d2d2d; border-radius: 8px; }
-        .section-title { font-weight: bold; margin-bottom: 10px; color: var(--primary); border-bottom: 1px solid #444; padding-bottom: 5px; }
-        label { display: block; margin: 8px 0 4px; font-size: 0.9em; }
-        input { width: 100%; padding: 10px; box-sizing: border-box; background: #3d3d3d; border: 1px solid #555; color: white; border-radius: 5px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        button { width: 100%; padding: 15px; background: var(--primary); border: none; color: black; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 20px; font-size: 1em; }
-        #reportPage { display: none; background: #fff; color: #000; padding: 20px; border-radius: 10px; white-space: pre-wrap; font-family: monospace; }
-        .back-btn { background: #555; color: white; margin-top: 10px; }
-        .copy-btn { background: #25D366; color: white; }
+        :root { --gold: #d4af37; --dark-bg: #121212; --card-bg: #1e1e1e; --text: #ffffff; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark-bg); color: var(--text); margin: 0; padding: 15px; }
+        .container { max-width: 450px; margin: auto; }
+        .header { text-align: center; border-bottom: 2px solid var(--gold); margin-bottom: 20px; padding-bottom: 10px; }
+        .header h1 { color: var(--gold); margin: 0; font-size: 24px; letter-spacing: 2px; }
+        
+        .section { background: var(--card-bg); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #333; }
+        .section-title { color: var(--gold); font-weight: bold; margin-bottom: 12px; font-size: 14px; text-transform: uppercase; border-left: 3px solid var(--gold); padding-left: 8px; }
+        
+        label { display: block; font-size: 12px; margin-bottom: 5px; color: #bbb; }
+        input { width: 100%; padding: 12px; margin-bottom: 10px; box-sizing: border-box; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 6px; font-size: 16px; }
+        input:focus { border-color: var(--gold); outline: none; }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        
+        button { width: 100%; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 16px; }
+        .btn-main { background: var(--gold); color: black; margin-top: 10px; }
+        .btn-copy { background: #25D366; color: white; margin-top: 10px; }
+        .btn-back { background: #444; color: white; margin-top: 10px; }
+        .btn-reset { background: #8b0000; color: white; font-size: 10px; padding: 5px; margin-top: 30px; opacity: 0.6; }
+
+        #reportPage { display: none; }
+        .report-box { background: white; color: black; padding: 20px; border-radius: 8px; font-family: 'Courier New', Courier, monospace; white-space: pre-wrap; font-size: 13px; line-height: 1.4; border-left: 5px solid var(--gold); }
     </style>
 </head>
 <body>
 
 <div id="entryPage" class="container">
-    <h2>Taiso DSR Entry</h2>
-    
-    <div class="section">
-        <label>Date</label>
-        <input type="date" id="date" value="2026-01-17">
+    <div class="header">
+        <h1>TAISO DSR</h1>
+        <p style="font-size: 12px; color: #888;">Admin Data Entry Portal</p>
     </div>
 
     <div class="section">
-        <div class="section-title">Membership Sale</div>
-        <label>Total Membership Amount</label>
-        <input type="number" id="gymTotal" placeholder="e.g. 15000">
-        <div class="grid">
-            <div><label>Cash</label><input type="number" id="gymCash" value="0"></div>
-            <div><label>UPI</label><input type="number" id="gymUpi" value="0"></div>
-            <div><label>Card</label><input type="number" id="gymCard" value="0"></div>
-            <div><label>Other (NEFT)</label><input type="number" id="gymNeft" value="0"></div>
+        <label>Select Entry Date</label>
+        <input type="date" id="date">
+    </div>
+
+    <div class="section">
+        <div class="section-title">1. Membership Sale & MOP</div>
+        <div class="grid-2">
+            <div><label>Cash Amount</label><input type="number" id="mCash" value="0"></div>
+            <div><label>UPI Amount</label><input type="number" id="mUpi" value="0"></div>
+            <div><label>Card Amount</label><input type="number" id="mCard" value="0"></div>
+            <div><label>NEFT/Other</label><input type="number" id="mNeft" value="0"></div>
         </div>
     </div>
 
     <div class="section">
-        <div class="section-title">Sales & Enquiries</div>
-        <div class="grid">
-            <div><label>Enquiries</label><input type="number" id="enq" value="0"></div>
-            <div><label>New Sales</label><input type="number" id="newSale" value="0"></div>
-            <div><label>Renewals</label><input type="number" id="renewal" value="0"></div>
+        <div class="section-title">2. Enquiry & Conversion</div>
+        <label>Total Enquiries Today</label>
+        <input type="number" id="enq" value="0">
+        <div class="grid-2">
+            <div><label>New Sales</label><input type="number" id="nSale" value="0"></div>
+            <div><label>Renewals</label><input type="number" id="ren" value="0"></div>
         </div>
     </div>
 
     <div class="section">
-        <div class="section-title">Personal Training (PT)</div>
-        <label>Today's PT Collection</label>
-        <input type="number" id="ptTotal" value="0">
-        <div class="grid">
-            <div><label>PT Cash</label><input type="number" id="ptCash" value="0"></div>
-            <div><label>PT UPI</label><input type="number" id="ptUpi" value="0"></div>
-            <div><label>PT Card</label><input type="number" id="ptCard" value="0"></div>
+        <div class="section-title">3. PT Collection & MOP</div>
+        <div class="grid-2">
+            <div><label>PT Cash</label><input type="number" id="pCash" value="0"></div>
+            <div><label>PT UPI</label><input type="number" id="pUpi" value="0"></div>
         </div>
     </div>
 
     <div class="section">
-        <div class="section-title">Staff Collection</div>
+        <div class="section-title">4. Personal Collection (Staff)</div>
         <label>Yasmin</label><input type="number" id="yasmin" value="0">
         <label>Komal</label><input type="number" id="komal" value="0">
-        <label>Sahil</label><input type="number" id="sahil" value="0">
     </div>
 
-    <button onclick="generateReport()">Generate Final Report</button>
+    <button class="btn-main" onclick="processDSR()">GENERATE REPORT</button>
+    <button class="btn-reset" onclick="resetDatabase()">RESET ALL MONTHLY DATA</button>
 </div>
 
 <div id="reportPage" class="container">
-    <div id="reportContent"></div>
-    <button class="copy-btn" onclick="copyReport()">Copy for WhatsApp</button>
-    <button class="back-btn" onclick="goBack()">Edit Entry</button>
+    <div class="header">
+        <h1>FINAL DSR</h1>
+    </div>
+    <div id="reportDisplay" class="report-box"></div>
+    <button class="btn-copy" onclick="copyDSR()">COPY FOR WHATSAPP</button>
+    <button class="btn-back" onclick="location.reload()">BACK TO ENTRY</button>
 </div>
 
 <script>
-    function generateReport() {
-        const date = document.getElementById('date').value;
-        const gymTotal = document.getElementById('gymTotal').value || 0;
-        const gymCash = document.getElementById('gymCash').value || 0;
-        const gymUpi = document.getElementById('gymUpi').value || 0;
-        const gymCard = Number(document.getElementById('gymCard').value) + Number(document.getElementById('gymNeft').value);
+    // Set current date on load
+    document.getElementById('date').valueAsDate = new Date();
+
+    function processDSR() {
+        // Get Inputs
+        const dateVal = document.getElementById('date').value;
+        const mc = Number(document.getElementById('mCash').value);
+        const mu = Number(document.getElementById('mUpi').value);
+        const mcard = Number(document.getElementById('mCard').value);
+        const mneft = Number(document.getElementById('mNeft').value);
         
-        const ptTotal = document.getElementById('ptTotal').value || 0;
-        const ptCash = document.getElementById('ptCash').value || 0;
-        const ptUpi = document.getElementById('ptUpi').value || 0;
-        const ptCard = document.getElementById('ptCard').value || 0;
+        const pc = Number(document.getElementById('pCash').value);
+        const pu = Number(document.getElementById('pUpi').value);
+        
+        const enq = document.getElementById('enq').value;
+        const ns = document.getElementById('nSale').value;
+        const rn = document.getElementById('ren').value;
+        
+        const yas = document.getElementById('yasmin').value;
+        const kom = document.getElementById('komal').value;
 
-        const enq = document.getElementById('enq').value || 0;
-        const nSale = document.getElementById('newSale').value || 0;
-        const ren = document.getElementById('renewal').value || 0;
+        const todayTotal = mc + mu + mcard + mneft + pc + pu;
+        const todayCash = mc + pc;
+        const todayUpi = mu + pu;
 
-        const yasmin = document.getElementById('yasmin').value || 0;
-        const komal = document.getElementById('komal').value || 0;
+        // LOCALSTORAGE LOGIC (TMC Calculation)
+        let tmcTotal = Number(localStorage.getItem('taiso_tmc')) || 0;
+        let tmcCash = Number(localStorage.getItem('taiso_cash')) || 0;
+        let tmcUpi = Number(localStorage.getItem('taiso_upi')) || 0;
 
-        // Note: TMC calculations would normally come from a database. 
-        // Here we are showing the format as requested.
-        const report = `Date:- ${date}
+        // Add today's data to TMC
+        tmcTotal += todayTotal;
+        tmcCash += todayCash;
+        tmcUpi += todayUpi;
 
-TMC Till Date : [Auto-Calculated]/-
+        // Save back to browser
+        localStorage.setItem('taiso_tmc', tmcTotal);
+        localStorage.setItem('taiso_cash', tmcCash);
+        localStorage.setItem('taiso_upi', tmcUpi);
 
-Gym today’s collection:- ${gymTotal}/-
-Cash: ${gymCash}/-
-Upi: ${gymUpi}/-
-Cheque: 
-Card credit/Debit: ${gymCard}/-
-Neft: 
+        // Format Report
+        const reportTemplate = `Date:- ${dateVal}
 
+TMC Till Date : ${tmcTotal.toLocaleString()}/-
 
-Total PT Collection: 
-Today's PT collection: ${ptTotal}/-
-UPI: ${ptUpi}/-
-CASH: ${ptCash}/-
-CARD: ${ptCard}/-
+Gym today’s collection:- ${(mc+mu+mcard+mneft).toLocaleString()}/-
+Cash: ${mc}/-
+Upi: ${mu}/-
+Card credit/Debit: ${mcard}/-
+Neft: ${mneft}/-
 
-Transfer fee: 
-Freeze: 
-Locker: 
+Today's PT collection: ${todayPt = pc + pu}/-
+UPI: ${pu}/-
+CASH: ${pc}/-
 
-Today's Total Enquires [prospect]: ${enq}
-Gym membership: ${Number(nSale) + Number(ren)}
-No. of renewal: ${ren}
-No. of new sale: ${nSale}
+Today's Total Enquires: ${enq}
+Gym membership: ${Number(ns) + Number(rn)}
+No. of renewal: ${rn}
+No. of new sale: ${ns}
 
-Total TMC cash: [TBD]
-Total TMC UPI: [TBD]
+Total TMC cash: ${tmcCash.toLocaleString()}/-
+Total TMC UPI: ${tmcUpi.toLocaleString()}/-
 
 Personal collection 
-Yasmin: ${yasmin}/-
-Komal: ${komal}/-
-Sahil: 
+Yasmin: ${yas}/-
+Komal: ${kom}/-
 
 Shift
 Morning: 
 Evening: Komal mam,`;
 
-        document.getElementById('reportContent').innerText = report;
+        document.getElementById('reportDisplay').innerText = reportTemplate;
         document.getElementById('entryPage').style.display = 'none';
         document.getElementById('reportPage').style.display = 'block';
+        window.scrollTo(0,0);
     }
 
-    function goBack() {
-        document.getElementById('entryPage').style.display = 'block';
-        document.getElementById('reportPage').style.display = 'none';
-    }
-
-    function copyReport() {
-        const text = document.getElementById('reportContent').innerText;
+    function copyDSR() {
+        const text = document.getElementById('reportDisplay').innerText;
         navigator.clipboard.writeText(text);
-        alert("Report copied! Now paste in WhatsApp.");
+        alert("Taiso DSR Copied!");
+    }
+
+    function resetDatabase() {
+        if(confirm("DANGER: Kya aap poore mahine ka data clear karna chahte hain?")) {
+            localStorage.clear();
+            alert("Database Reset Successfully!");
+            location.reload();
+        }
     }
 </script>
 
