@@ -20,17 +20,18 @@
         .btn-history { background: #3a3a3a; color: var(--gold); border: 1px solid var(--gold); font-size: 14px; margin-bottom: 10px; }
         .btn-copy { background: #25D366; color: white; }
         #reportPage { display: none; }
-        .report-box { background: white; color: black; padding: 25px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; font-size: 14px; line-height: 1.8; border-left: 5px solid var(--gold); }
+        .report-box { background: white; color: black; padding: 25px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; font-size: 15px; line-height: 1.8; border-left: 5px solid var(--gold); }
     </style>
 </head>
 <body>
 
 <div id="entryPage" class="container">
     <div class="header"><h1>TAISO DSR</h1></div>
+    
     <div class="section">
         <label>Select Date</label>
         <input type="date" id="date">
-        <button class="btn-history" onclick="fetchHistory()">VIEW OLD DSR (HISTORY)</button>
+        <button class="btn-history" onclick="fetchHistory()">VIEW HISTORY (REPORT)</button>
     </div>
 
     <div class="section">
@@ -64,9 +65,11 @@
 
     <div class="section">
         <div class="section-title">4. Personal Collection</div>
-        <label>Yuvraj Sir</label><input type="number" id="yuvraj" value="0">
-        <label>Naeem Sir</label><input type="number" id="naeem" value="0">
-        <label>Rohini Mam</label><input type="number" id="rohini" value="0">
+        <div class="grid-2">
+            <div><label>Komal Mam</label><input type="number" id="komal" value="0"></div>
+            <div><label>Priya Mam</label><input type="number" id="priya" value="0"></div>
+        </div>
+        <label>Shahil Sir</label><input type="number" id="shahil" value="0">
     </div>
 
     <div class="section">
@@ -76,7 +79,6 @@
     </div>
 
     <button class="btn-main" id="submitBtn" onclick="processAndSync()">SAVE & GENERATE REPORT</button>
-    <div id="status" style="text-align:center; color:#d4af37; margin-top:10px;"></div>
 </div>
 
 <div id="reportPage" class="container">
@@ -88,51 +90,59 @@
 
 <script>
     document.getElementById('date').valueAsDate = new Date();
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw1e7f8ChbQC8GD3bU9qB5nMiMW84GywqqNRWapqWC3RudJ3TxWAf0GSDV8lG3xxIptTA/exec";
+    
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw2UG5zNqcXoB1IjCW2hgpCFsHCoQKA0qWCiI29bJPvQm4ye_--OLV0WQheudP3FIvc4w/exec";
 
-    function generateFormat(d, tmc, tmcCash, tmcUpi, tmcCard, tmcNeft, isHistory, ptTillDate) {
-        const tGym = Number(d.mCash)+Number(d.mUpi)+Number(d.mCard)+Number(d.mNeft);
-        const tPt = Number(d.pCash)+Number(d.pUpi)+Number(d.pCard)+Number(d.pNeft);
-        
-        return `Date:- ${d.date}${isHistory ? " (HISTORY)" : ""}
+    function generateFormat(d, tmc, ptTillDate, tmcCash, tmcUpi, tmcCard, tmcNeft) {
+        const tCashToday = Number(d.mCash) + Number(d.pCash);
+        const tUpiToday = Number(d.mUpi) + Number(d.pUpi);
+        const tCardToday = Number(d.mCard) + Number(d.pCard);
+        const tNeftToday = Number(d.mNeft) + Number(d.pNeft);
+        const grandTotalToday = tCashToday + tUpiToday + tCardToday + tNeftToday;
 
-TMC Till Date : ${Number(tmc).toLocaleString()}/-
+        const tPtToday = Number(d.pCash) + Number(d.pUpi) + Number(d.pCard) + Number(d.pNeft);
 
-Gym today’s collection:- ${tGym.toLocaleString()}/-
-Cash: ${d.mCash}/- | UPI: ${d.mUpi}/-
-Card: ${d.mCard}/- | Neft: ${d.mNeft}/-
+        return `Date:- ${d.date}
+
+TMC (Till Date): ${Number(tmc).toLocaleString()}/-
+
+Gym Today’s Collection: ${grandTotalToday.toLocaleString()}/-
+Cash: ${tCashToday.toLocaleString()}/-
+UPI: ${tUpiToday.toLocaleString()}/-
+Card: ${tCardToday.toLocaleString()}/-
+Neft: ${tNeftToday.toLocaleString()}/-
 
 PT Collection (Till Date): ${Number(ptTillDate).toLocaleString()}/-
-Today's PT collection: ${tPt.toLocaleString()}/-
-CASH: ${d.pCash}/- | UPI: ${d.pUpi}/-
-CARD: ${d.pCard}/- | NEFT: ${d.pNeft}/-
+Today's PT Collection: ${tPtToday.toLocaleString()}/-
+Cash: ${Number(d.pCash).toLocaleString()}/-
+UPI: ${Number(d.pUpi).toLocaleString()}/-
+Card: ${Number(d.pCard).toLocaleString()}/-
+Neft: ${Number(d.pNeft).toLocaleString()}/-
 
 Today's Total Enquiries: ${d.enq}
-Gym membership: ${Number(d.nSale)+Number(d.ren)}
-No. of new sale: ${d.nSale}
-No. of renewal: ${d.ren}
+Gym Memberships: ${Number(d.nSale)+Number(d.ren)}
+New Sale: ${d.nSale}
+Renewal: ${d.ren}
 
 --- TOTAL MONTHLY SUMMARY ---
-Total TMC Cash: ${Number(tmcCash).toLocaleString()}/-
-Total TMC UPI: ${Number(tmcUpi).toLocaleString()}/-
-Total TMC Card: ${Number(tmcCard || 0).toLocaleString()}/-
-Total TMC NEFT: ${Number(tmcNeft || 0).toLocaleString()}/-
+TMC Cash: ${Number(tmcCash).toLocaleString()}/-
+TMC UPI: ${Number(tmcUpi).toLocaleString()}/-
+TMC Card: ${Number(tmcCard).toLocaleString()}/-
+TMC Neft: ${Number(tmcNeft).toLocaleString()}/-
 
-Personal collection 
-Yuvraj Sir: ${d.yuvraj}/-
-Naeem Sir: ${d.naeem}/-
-Rohini Mam: ${d.rohini}/-
+Personal Collection:
+Komal Mam: ${d.komal}/-
+Priya Mam: ${d.priya}/-
+Shahil Sir: ${d.shahil}/-
 
-Shift
+Shift:
 Morning: ${d.shiftM}
 Evening: ${d.shiftE}`;
     }
 
     async function fetchHistory() {
         const dateVal = document.getElementById('date').value;
-        const status = document.getElementById('status');
         if(!dateVal) return alert("Select Date!");
-        status.innerText = "Fetching...";
         
         try {
             const resp = await fetch(`${SCRIPT_URL}?date=${dateVal}`);
@@ -143,15 +153,14 @@ Evening: ${d.shiftE}`;
                     date: dateVal, mCash: r[1], mUpi: r[2], mCard: r[3], mNeft: r[4],
                     pCash: r[5], pUpi: r[6], pCard: r[7], pNeft: r[8],
                     enq: r[9], nSale: r[10], ren: r[11],
-                    yuvraj: r[12], naeem: r[13], rohini: r[14],
+                    komal: r[12], priya: r[13], shahil: r[14],
                     shiftM: r[15], shiftE: r[16]
                 };
-                document.getElementById('reportDisplay').innerText = generateFormat(d, data.tmcTotal, data.tmcCash, data.tmcUpi, data.tmcCard, data.tmcNeft, true, data.ptTillDate);
+                document.getElementById('reportDisplay').innerText = generateFormat(d, data.tmcTotal, data.ptTillDate, data.tmcCash, data.tmcUpi, data.tmcCard, data.tmcNeft);
                 document.getElementById('entryPage').style.display = 'none';
                 document.getElementById('reportPage').style.display = 'block';
             } else { alert("Data nahi mila!"); }
-        } catch (e) { alert("Error: Web App URL ya Internet check karein."); }
-        status.innerText = "";
+        } catch (e) { alert("Error fetching data!"); }
     }
 
     async function processAndSync() {
@@ -169,9 +178,9 @@ Evening: ${d.shiftE}`;
             enq: document.getElementById('enq').value || 0,
             nSale: document.getElementById('nSale').value || 0,
             ren: document.getElementById('ren').value || 0,
-            yuvraj: document.getElementById('yuvraj').value || 0,
-            naeem: document.getElementById('naeem').value || 0,
-            rohini: document.getElementById('rohini').value || 0,
+            komal: document.getElementById('komal').value || 0,
+            priya: document.getElementById('priya').value || 0,
+            shahil: document.getElementById('shahil').value || 0,
             shiftM: document.getElementById('sM').value || "-",
             shiftE: document.getElementById('sE').value || "-"
         };
@@ -180,9 +189,9 @@ Evening: ${d.shiftE}`;
         btn.disabled = true;
         try {
             await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) });
-            alert("Data Saved!");
+            alert("Success! Data Saved.");
             location.reload();
-        } catch (e) { alert("Error!"); btn.disabled = false; }
+        } catch (e) { alert("Save Error!"); btn.disabled = false; }
     }
 
     function copyDSR() {
