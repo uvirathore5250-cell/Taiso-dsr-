@@ -91,16 +91,13 @@
 <script>
     document.getElementById('date').valueAsDate = new Date();
     
-    // Aapka naya Web App URL update kar diya gaya hai
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0ZRlVxc9D6TAz54dNldkr0icQUfeld-wULnKVbYTsCVyyN_bOvSRl8m7BOA0er1eERg/exec";
+    // Naya Web App URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw1e7f8ChbQC8GD3bU9qB5nMiMW84GywqqNRWapqWC3RudJ3TxWAf0GSDV8lG3xxIptTA/exec";
 
-    function generateFormat(d, tmc, tmcCash, tmcUpi, tmcCard, tmcNeft, isHistory = false) {
+    function generateFormat(d, tmc, tmcCash, tmcUpi, tmcCard, tmcNeft, isHistory, ptTillDate) {
         const todayGym = Number(d.mCash) + Number(d.mUpi) + Number(d.mCard) + Number(d.mNeft);
         const todayPt = Number(d.pCash) + Number(d.pUpi) + Number(d.pCard) + Number(d.pNeft);
         
-        // PT Till Date calculation (Total PT from Cash + UPI + Card + NEFT)
-        const ptTillDate = Number(tmcCash) + Number(tmcUpi) + Number(tmcCard || 0) + Number(tmcNeft || 0);
-
         return `Date:- ${d.date}${isHistory ? " (HISTORY)" : ""}
 
 TMC Till Date : ${Number(tmc).toLocaleString()}/-
@@ -111,7 +108,7 @@ Upi: ${d.mUpi}/-
 Card credit/Debit: ${d.mCard}/-
 Neft: ${d.mNeft}/-
 
-PT Collection (Till Date): ${ptTillDate.toLocaleString()}/-
+PT Collection (Till Date): ${Number(ptTillDate).toLocaleString()}/-
 Today's PT collection: ${todayPt.toLocaleString()}/-
 CASH: ${d.pCash}/-
 UPI: ${d.pUpi}/-
@@ -150,7 +147,7 @@ Evening: ${d.shiftE}`;
             const data = await response.json();
             
             if (data.status === "Not Found") {
-                alert("Data nahi mila! Is date ka data check karein.");
+                alert("Data nahi mila!");
                 status.innerText = "";
             } else {
                 const r = data.row;
@@ -161,12 +158,13 @@ Evening: ${d.shiftE}`;
                     yuvraj: r[12], naeem: r[13], rohini: r[14],
                     shiftM: r[15], shiftE: r[16]
                 };
-                document.getElementById('reportDisplay').innerText = generateFormat(d, data.tmcTotal, data.tmcCash, data.tmcUpi, data.tmcCard, data.tmcNeft, true);
+                // PT Till Date script se lekar yahan pass kiya gaya hai
+                document.getElementById('reportDisplay').innerText = generateFormat(d, data.tmcTotal, data.tmcCash, data.tmcUpi, data.tmcCard, data.tmcNeft, true, data.ptTillDate);
                 document.getElementById('entryPage').style.display = 'none';
                 document.getElementById('reportPage').style.display = 'block';
                 status.innerText = "";
             }
-        } catch (e) { alert("Error! Script permissions check karein."); status.innerText=""; }
+        } catch (e) { alert("Connection Error!"); status.innerText=""; }
     }
 
     async function processAndSync() {
@@ -198,9 +196,9 @@ Evening: ${d.shiftE}`;
             btn.disabled = true;
             status.innerText = "Saving...";
             await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) });
-            alert("Success! Ab aap History check kar sakte hain.");
+            alert("Success! History check karein.");
             location.reload();
-        } catch (e) { alert("Error saving data!"); btn.disabled=false; }
+        } catch (e) { alert("Save Failed!"); btn.disabled=false; }
     }
 
     function copyDSR() {
