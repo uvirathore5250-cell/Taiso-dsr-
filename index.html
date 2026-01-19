@@ -27,7 +27,6 @@
 
 <div id="entryPage" class="container">
     <div class="header"><h1>TAISO DSR</h1></div>
-
     <div class="section">
         <label>Select Date</label>
         <input type="date" id="date">
@@ -56,8 +55,7 @@
 
     <div class="section">
         <div class="section-title">3. Enquiry & Conversion</div>
-        <label>Total Enquiries</label>
-        <input type="number" id="enq" value="0">
+        <label>Total Enquiries</label><input type="number" id="enq" value="0">
         <div class="grid-2">
             <div><label>New Sales</label><input type="number" id="nSale" value="0"></div>
             <div><label>Renewals</label><input type="number" id="ren" value="0"></div>
@@ -73,8 +71,8 @@
 
     <div class="section">
         <div class="section-title">5. Staffing</div>
-        <label>Morning Staff</label><input type="text" id="staffMorning" value="-">
-        <label>Evening Staff</label><input type="text" id="staffEvening" value="-">
+        <label>Morning Staff</label><input type="text" id="sM" value="-">
+        <label>Evening Staff</label><input type="text" id="sE" value="-">
     </div>
 
     <button class="btn-main" id="submitBtn" onclick="processAndSync()">SAVE & GENERATE REPORT</button>
@@ -90,33 +88,27 @@
 
 <script>
     document.getElementById('date').valueAsDate = new Date();
-    
-    // Naya Web App URL
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw1e7f8ChbQC8GD3bU9qB5nMiMW84GywqqNRWapqWC3RudJ3TxWAf0GSDV8lG3xxIptTA/exec";
 
     function generateFormat(d, tmc, tmcCash, tmcUpi, tmcCard, tmcNeft, isHistory, ptTillDate) {
-        const todayGym = Number(d.mCash) + Number(d.mUpi) + Number(d.mCard) + Number(d.mNeft);
-        const todayPt = Number(d.pCash) + Number(d.pUpi) + Number(d.pCard) + Number(d.pNeft);
+        const tGym = Number(d.mCash)+Number(d.mUpi)+Number(d.mCard)+Number(d.mNeft);
+        const tPt = Number(d.pCash)+Number(d.pUpi)+Number(d.pCard)+Number(d.pNeft);
         
         return `Date:- ${d.date}${isHistory ? " (HISTORY)" : ""}
 
 TMC Till Date : ${Number(tmc).toLocaleString()}/-
 
-Gym today’s collection:- ${todayGym.toLocaleString()}/-
-Cash: ${d.mCash}/-
-Upi: ${d.mUpi}/-
-Card credit/Debit: ${d.mCard}/-
-Neft: ${d.mNeft}/-
+Gym today’s collection:- ${tGym.toLocaleString()}/-
+Cash: ${d.mCash}/- | UPI: ${d.mUpi}/-
+Card: ${d.mCard}/- | Neft: ${d.mNeft}/-
 
 PT Collection (Till Date): ${Number(ptTillDate).toLocaleString()}/-
-Today's PT collection: ${todayPt.toLocaleString()}/-
-CASH: ${d.pCash}/-
-UPI: ${d.pUpi}/-
-CARD: ${d.pCard}/-
-NEFT: ${d.pNeft}/-
+Today's PT collection: ${tPt.toLocaleString()}/-
+CASH: ${d.pCash}/- | UPI: ${d.pUpi}/-
+CARD: ${d.pCard}/- | NEFT: ${d.pNeft}/-
 
 Today's Total Enquiries: ${d.enq}
-Gym membership: ${Number(d.nSale) + Number(d.ren)}
+Gym membership: ${Number(d.nSale)+Number(d.ren)}
 No. of new sale: ${d.nSale}
 No. of renewal: ${d.ren}
 
@@ -140,16 +132,12 @@ Evening: ${d.shiftE}`;
         const dateVal = document.getElementById('date').value;
         const status = document.getElementById('status');
         if(!dateVal) return alert("Select Date!");
-        status.innerText = "Connecting...";
+        status.innerText = "Fetching...";
         
         try {
-            const response = await fetch(`${SCRIPT_URL}?date=${dateVal}`);
-            const data = await response.json();
-            
-            if (data.status === "Not Found") {
-                alert("Data nahi mila!");
-                status.innerText = "";
-            } else {
+            const resp = await fetch(`${SCRIPT_URL}?date=${dateVal}`);
+            const data = await resp.json();
+            if (data.status === "Found") {
                 const r = data.row;
                 const d = {
                     date: dateVal, mCash: r[1], mUpi: r[2], mCard: r[3], mNeft: r[4],
@@ -158,18 +146,16 @@ Evening: ${d.shiftE}`;
                     yuvraj: r[12], naeem: r[13], rohini: r[14],
                     shiftM: r[15], shiftE: r[16]
                 };
-                // PT Till Date script se lekar yahan pass kiya gaya hai
                 document.getElementById('reportDisplay').innerText = generateFormat(d, data.tmcTotal, data.tmcCash, data.tmcUpi, data.tmcCard, data.tmcNeft, true, data.ptTillDate);
                 document.getElementById('entryPage').style.display = 'none';
                 document.getElementById('reportPage').style.display = 'block';
-                status.innerText = "";
-            }
-        } catch (e) { alert("Connection Error!"); status.innerText=""; }
+            } else { alert("Data nahi mila!"); }
+        } catch (e) { alert("Error: Web App URL ya Internet check karein."); }
+        status.innerText = "";
     }
 
     async function processAndSync() {
         const btn = document.getElementById('submitBtn');
-        const status = document.getElementById('status');
         const d = {
             date: document.getElementById('date').value,
             mCash: document.getElementById('mCash').value || 0,
@@ -186,19 +172,17 @@ Evening: ${d.shiftE}`;
             yuvraj: document.getElementById('yuvraj').value || 0,
             naeem: document.getElementById('naeem').value || 0,
             rohini: document.getElementById('rohini').value || 0,
-            shiftM: document.getElementById('staffMorning').value || "-",
-            shiftE: document.getElementById('staffEvening').value || "-"
+            shiftM: document.getElementById('sM').value || "-",
+            shiftE: document.getElementById('sE').value || "-"
         };
-        const todayTotal = Number(d.mCash) + Number(d.mUpi) + Number(d.mCard) + Number(d.mNeft) + Number(d.pCash) + Number(d.pUpi) + Number(d.pCard) + Number(d.pNeft);
-        d.todayTotal = todayTotal;
-
+        d.todayTotal = Number(d.mCash)+Number(d.mUpi)+Number(d.mCard)+Number(d.mNeft)+Number(d.pCash)+Number(d.pUpi)+Number(d.pCard)+Number(d.pNeft);
+        
+        btn.disabled = true;
         try {
-            btn.disabled = true;
-            status.innerText = "Saving...";
             await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) });
-            alert("Success! History check karein.");
+            alert("Data Saved!");
             location.reload();
-        } catch (e) { alert("Save Failed!"); btn.disabled=false; }
+        } catch (e) { alert("Error!"); btn.disabled = false; }
     }
 
     function copyDSR() {
