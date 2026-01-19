@@ -66,9 +66,9 @@
 
     <div class="section">
         <div class="section-title">4. Personal Collection</div>
-        <label>Rohini Mam</label><input type="number" id="rohini" value="0">
-        <label>Naeem Sir</label><input type="number" id="naeem" value="0">
         <label>Yuvraj Sir</label><input type="number" id="yuvraj" value="0">
+        <label>Naeem Sir</label><input type="number" id="naeem" value="0">
+        <label>Rohini Mam</label><input type="number" id="rohini" value="0">
     </div>
 
     <div class="section">
@@ -90,14 +90,16 @@
 
 <script>
     document.getElementById('date').valueAsDate = new Date();
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbww6nI1gj-ltQ1SUq69Zf1_Zn373i6Fe0GseX9qkX0gXQjeMul9PI_pcSo4X3Yo05PZ6A/exec";
+    
+    // Aapka naya Web App URL update kar diya gaya hai
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby0ZRlVxc9D6TAz54dNldkr0icQUfeld-wULnKVbYTsCVyyN_bOvSRl8m7BOA0er1eERg/exec";
 
     function generateFormat(d, tmc, tmcCash, tmcUpi, tmcCard, tmcNeft, isHistory = false) {
         const todayGym = Number(d.mCash) + Number(d.mUpi) + Number(d.mCard) + Number(d.mNeft);
         const todayPt = Number(d.pCash) + Number(d.pUpi) + Number(d.pCard) + Number(d.pNeft);
         
-        // PT Till Date calculation based on PT columns in sheet
-        const ptTillDate = Number(tmcCash) + Number(tmcUpi) + Number(tmcCard) + Number(tmcNeft);
+        // PT Till Date calculation (Total PT from Cash + UPI + Card + NEFT)
+        const ptTillDate = Number(tmcCash) + Number(tmcUpi) + Number(tmcCard || 0) + Number(tmcNeft || 0);
 
         return `Date:- ${d.date}${isHistory ? " (HISTORY)" : ""}
 
@@ -128,9 +130,9 @@ Total TMC Card: ${Number(tmcCard || 0).toLocaleString()}/-
 Total TMC NEFT: ${Number(tmcNeft || 0).toLocaleString()}/-
 
 Personal collection 
-Rohini Mam: ${d.rohini}/-
-Naeem Sir: ${d.naeem}/-
 Yuvraj Sir: ${d.yuvraj}/-
+Naeem Sir: ${d.naeem}/-
+Rohini Mam: ${d.rohini}/-
 
 Shift
 Morning: ${d.shiftM}
@@ -141,14 +143,14 @@ Evening: ${d.shiftE}`;
         const dateVal = document.getElementById('date').value;
         const status = document.getElementById('status');
         if(!dateVal) return alert("Select Date!");
-        status.innerText = "Fetching History...";
+        status.innerText = "Connecting...";
         
         try {
             const response = await fetch(`${SCRIPT_URL}?date=${dateVal}`);
             const data = await response.json();
             
             if (data.status === "Not Found") {
-                alert("Data nahi mila!");
+                alert("Data nahi mila! Is date ka data check karein.");
                 status.innerText = "";
             } else {
                 const r = data.row;
@@ -156,7 +158,7 @@ Evening: ${d.shiftE}`;
                     date: dateVal, mCash: r[1], mUpi: r[2], mCard: r[3], mNeft: r[4],
                     pCash: r[5], pUpi: r[6], pCard: r[7], pNeft: r[8],
                     enq: r[9], nSale: r[10], ren: r[11],
-                    rohini: r[14], naeem: r[13], yuvraj: r[12],
+                    yuvraj: r[12], naeem: r[13], rohini: r[14],
                     shiftM: r[15], shiftE: r[16]
                 };
                 document.getElementById('reportDisplay').innerText = generateFormat(d, data.tmcTotal, data.tmcCash, data.tmcUpi, data.tmcCard, data.tmcNeft, true);
@@ -164,7 +166,7 @@ Evening: ${d.shiftE}`;
                 document.getElementById('reportPage').style.display = 'block';
                 status.innerText = "";
             }
-        } catch (e) { alert("Error connecting to script."); status.innerText=""; }
+        } catch (e) { alert("Error! Script permissions check karein."); status.innerText=""; }
     }
 
     async function processAndSync() {
@@ -183,9 +185,9 @@ Evening: ${d.shiftE}`;
             enq: document.getElementById('enq').value || 0,
             nSale: document.getElementById('nSale').value || 0,
             ren: document.getElementById('ren').value || 0,
-            rohini: document.getElementById('rohini').value || 0,
-            naeem: document.getElementById('naeem').value || 0,
             yuvraj: document.getElementById('yuvraj').value || 0,
+            naeem: document.getElementById('naeem').value || 0,
+            rohini: document.getElementById('rohini').value || 0,
             shiftM: document.getElementById('staffMorning').value || "-",
             shiftE: document.getElementById('staffEvening').value || "-"
         };
@@ -194,11 +196,11 @@ Evening: ${d.shiftE}`;
 
         try {
             btn.disabled = true;
-            status.innerText = "Saving Data...";
+            status.innerText = "Saving...";
             await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) });
-            alert("Data Saved Successfully!");
+            alert("Success! Ab aap History check kar sakte hain.");
             location.reload();
-        } catch (e) { alert("Failed to save."); btn.disabled=false; }
+        } catch (e) { alert("Error saving data!"); btn.disabled=false; }
     }
 
     function copyDSR() {
