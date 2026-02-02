@@ -65,7 +65,7 @@
 
     <div class="section">
         <div class="section-title">4. Personal Collection</div>
-        <label>Rohini Mam Today</label>
+        <label>Rohini Mam Collection</label>
         <input type="number" id="rohini" value="0">
     </div>
 
@@ -88,7 +88,6 @@
 <script>
     document.getElementById('date').valueAsDate = new Date();
     
-    // Naya Web App URL update kar diya gaya hai
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxcruzz8vjV7syiaONOJc7K_7wSeT7J7fa_uKyYHv5fOpfWLRK9-Tn4nVwIpVp5CelwtQ/exec";
 
     function generateFormat(d, tmc, ptTillDate, tmcCash, tmcUpi, tmcCard, tmcNeft, rohiniTotal) {
@@ -97,7 +96,6 @@
         const tCardToday = Number(d.mCard) + Number(d.pCard);
         const tNeftToday = Number(d.mNeft) + Number(d.pNeft);
         const grandTotalToday = tCashToday + tUpiToday + tCardToday + tNeftToday;
-
         const tPtToday = Number(d.pCash) + Number(d.pUpi) + Number(d.pCard) + Number(d.pNeft);
 
         return `Date:- ${d.date}
@@ -129,7 +127,6 @@ TMC Card: ${Number(tmcCard).toLocaleString()}/-
 TMC Neft: ${Number(tmcNeft).toLocaleString()}/-
 
 Personal Collection:
-Rohini Mam Today: ${Number(d.rohini).toLocaleString()}/-
 Rohini Mam (This Month): ${Number(rohiniTotal).toLocaleString()}/-
 
 Shift:
@@ -146,7 +143,6 @@ Evening: ${d.shiftE}`;
             const data = await resp.json();
             if (data.status === "Found") {
                 const r = data.row;
-                // Mapping: Index 12=Rohini Mam, 15=Morning Shift (P), 16=Evening Shift (Q)
                 const d = {
                     date: dateVal, mCash: r[1], mUpi: r[2], mCard: r[3], mNeft: r[4],
                     pCash: r[5], pUpi: r[6], pCard: r[7], pNeft: r[8],
