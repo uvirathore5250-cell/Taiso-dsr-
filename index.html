@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAISO DSR - Rohini Mam Edition</title>
+    <title>TAISO DSR - Smart Admin</title>
     <style>
         :root { --gold: #d4af37; --dark-bg: #121212; --card-bg: #1e1e1e; --text: #ffffff; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark-bg); color: var(--text); margin: 0; padding: 15px; }
@@ -65,7 +65,7 @@
 
     <div class="section">
         <div class="section-title">4. Personal Collection</div>
-        <label>Rohini Mam</label>
+        <label>Rohini Mam Today</label>
         <input type="number" id="rohini" value="0">
     </div>
 
@@ -88,10 +88,10 @@
 <script>
     document.getElementById('date').valueAsDate = new Date();
     
-    // Updated Web App URL
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby-FW8GWG47vqwkctIW1Jbb8A1fDt903c48QrZsOR3qqMWg1nKS7TvtpGV84L1malwMFg/exec";
+    // Naya Web App URL update kar diya gaya hai
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxcruzz8vjV7syiaONOJc7K_7wSeT7J7fa_uKyYHv5fOpfWLRK9-Tn4nVwIpVp5CelwtQ/exec";
 
-    function generateFormat(d, tmc, ptTillDate, tmcCash, tmcUpi, tmcCard, tmcNeft) {
+    function generateFormat(d, tmc, ptTillDate, tmcCash, tmcUpi, tmcCard, tmcNeft, rohiniTotal) {
         const tCashToday = Number(d.mCash) + Number(d.pCash);
         const tUpiToday = Number(d.mUpi) + Number(d.pUpi);
         const tCardToday = Number(d.mCard) + Number(d.pCard);
@@ -102,7 +102,7 @@
 
         return `Date:- ${d.date}
 
-TMC (Till Date): ${Number(tmc).toLocaleString()}/-
+TMC (This Month): ${Number(tmc).toLocaleString()}/-
 
 Gym Today’s Collection: ${grandTotalToday.toLocaleString()}/-
 Cash: ${tCashToday.toLocaleString()}/-
@@ -110,7 +110,7 @@ UPI: ${tUpiToday.toLocaleString()}/-
 Card: ${tCardToday.toLocaleString()}/-
 Neft: ${tNeftToday.toLocaleString()}/-
 
-PT Collection (Till Date): ${Number(ptTillDate).toLocaleString()}/-
+PT Collection (This Month): ${Number(ptTillDate).toLocaleString()}/-
 Today's PT Collection: ${tPtToday.toLocaleString()}/-
 Cash: ${Number(d.pCash).toLocaleString()}/-
 UPI: ${Number(d.pUpi).toLocaleString()}/-
@@ -122,14 +122,15 @@ Gym Memberships: ${Number(d.nSale)+Number(d.ren)}
 New Sale: ${d.nSale}
 Renewal: ${d.ren}
 
---- TOTAL MONTHLY SUMMARY ---
+--- MONTHLY SUMMARY ---
 TMC Cash: ${Number(tmcCash).toLocaleString()}/-
 TMC UPI: ${Number(tmcUpi).toLocaleString()}/-
 TMC Card: ${Number(tmcCard).toLocaleString()}/-
 TMC Neft: ${Number(tmcNeft).toLocaleString()}/-
 
 Personal Collection:
-Rohini Mam: ${Number(d.rohini).toLocaleString()}/-
+Rohini Mam Today: ${Number(d.rohini).toLocaleString()}/-
+Rohini Mam (This Month): ${Number(rohiniTotal).toLocaleString()}/-
 
 Shift:
 Morning: ${d.shiftM}
@@ -145,15 +146,15 @@ Evening: ${d.shiftE}`;
             const data = await resp.json();
             if (data.status === "Found") {
                 const r = data.row;
-                // Mapping based on the new 16-column structure
+                // Mapping: Index 12=Rohini Mam, 15=Morning Shift (P), 16=Evening Shift (Q)
                 const d = {
                     date: dateVal, mCash: r[1], mUpi: r[2], mCard: r[3], mNeft: r[4],
                     pCash: r[5], pUpi: r[6], pCard: r[7], pNeft: r[8],
                     enq: r[9], nSale: r[10], ren: r[11],
                     rohini: r[12], 
-                    shiftM: r[13], shiftE: r[14]
+                    shiftM: r[15], shiftE: r[16]
                 };
-                document.getElementById('reportDisplay').innerText = generateFormat(d, data.tmcTotal, data.ptTillDate, data.tmcCash, data.tmcUpi, data.tmcCard, data.tmcNeft);
+                document.getElementById('reportDisplay').innerText = generateFormat(d, data.tmcTotal, data.ptTillDate, data.tmcCash, data.tmcUpi, data.tmcCard, data.tmcNeft, data.rohiniTotal);
                 document.getElementById('entryPage').style.display = 'none';
                 document.getElementById('reportPage').style.display = 'block';
             } else { alert("Data nahi mila!"); }
@@ -182,23 +183,18 @@ Evening: ${d.shiftE}`;
         d.todayTotal = Number(d.mCash)+Number(d.mUpi)+Number(d.mCard)+Number(d.mNeft)+Number(d.pCash)+Number(d.pUpi)+Number(d.pCard)+Number(d.pNeft);
         
         btn.disabled = true;
-        btn.innerText = "SAVING...";
         try {
             await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) });
             alert("Success! Data Saved.");
             location.reload();
-        } catch (e) { alert("Save Error!"); btn.disabled = false; btn.innerText = "SAVE & GENERATE REPORT"; }
+        } catch (e) { alert("Save Error!"); btn.disabled = false; }
     }
 
     function copyDSR() {
         const text = document.getElementById('reportDisplay').innerText;
-        const elem = document.createElement('textarea');
-        document.body.appendChild(elem);
-        elem.value = text;
-        elem.select();
-        document.execCommand('copy');
-        document.body.removeChild(elem);
-        alert("Report Copied!");
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Report Copied!");
+        });
     }
 </script>
 </body>
