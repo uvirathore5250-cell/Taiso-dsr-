@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAISO DSR - Smart Admin</title>
+    <title>TAISO DSR - Rohini Mam Edition</title>
     <style>
         :root { --gold: #d4af37; --dark-bg: #121212; --card-bg: #1e1e1e; --text: #ffffff; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark-bg); color: var(--text); margin: 0; padding: 15px; }
@@ -65,11 +65,8 @@
 
     <div class="section">
         <div class="section-title">4. Personal Collection</div>
-        <div class="grid-2">
-            <div><label>Komal Mam</label><input type="number" id="komal" value="0"></div>
-            <div><label>Priya Mam</label><input type="number" id="priya" value="0"></div>
-        </div>
-        <label>Shahil Sir</label><input type="number" id="shahil" value="0">
+        <label>Rohini Mam</label>
+        <input type="number" id="rohini" value="0">
     </div>
 
     <div class="section">
@@ -91,7 +88,8 @@
 <script>
     document.getElementById('date').valueAsDate = new Date();
     
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw2UG5zNqcXoB1IjCW2hgpCFsHCoQKA0qWCiI29bJPvQm4ye_--OLV0WQheudP3FIvc4w/exec";
+    // Updated Web App URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby-FW8GWG47vqwkctIW1Jbb8A1fDt903c48QrZsOR3qqMWg1nKS7TvtpGV84L1malwMFg/exec";
 
     function generateFormat(d, tmc, ptTillDate, tmcCash, tmcUpi, tmcCard, tmcNeft) {
         const tCashToday = Number(d.mCash) + Number(d.pCash);
@@ -131,9 +129,7 @@ TMC Card: ${Number(tmcCard).toLocaleString()}/-
 TMC Neft: ${Number(tmcNeft).toLocaleString()}/-
 
 Personal Collection:
-Komal Mam: ${d.komal}/-
-Priya Mam: ${d.priya}/-
-Shahil Sir: ${d.shahil}/-
+Rohini Mam: ${Number(d.rohini).toLocaleString()}/-
 
 Shift:
 Morning: ${d.shiftM}
@@ -149,12 +145,13 @@ Evening: ${d.shiftE}`;
             const data = await resp.json();
             if (data.status === "Found") {
                 const r = data.row;
+                // Mapping based on the new 16-column structure
                 const d = {
                     date: dateVal, mCash: r[1], mUpi: r[2], mCard: r[3], mNeft: r[4],
                     pCash: r[5], pUpi: r[6], pCard: r[7], pNeft: r[8],
                     enq: r[9], nSale: r[10], ren: r[11],
-                    komal: r[12], priya: r[13], shahil: r[14],
-                    shiftM: r[15], shiftE: r[16]
+                    rohini: r[12], 
+                    shiftM: r[13], shiftE: r[14]
                 };
                 document.getElementById('reportDisplay').innerText = generateFormat(d, data.tmcTotal, data.ptTillDate, data.tmcCash, data.tmcUpi, data.tmcCard, data.tmcNeft);
                 document.getElementById('entryPage').style.display = 'none';
@@ -178,24 +175,29 @@ Evening: ${d.shiftE}`;
             enq: document.getElementById('enq').value || 0,
             nSale: document.getElementById('nSale').value || 0,
             ren: document.getElementById('ren').value || 0,
-            komal: document.getElementById('komal').value || 0,
-            priya: document.getElementById('priya').value || 0,
-            shahil: document.getElementById('shahil').value || 0,
+            rohini: document.getElementById('rohini').value || 0,
             shiftM: document.getElementById('sM').value || "-",
             shiftE: document.getElementById('sE').value || "-"
         };
         d.todayTotal = Number(d.mCash)+Number(d.mUpi)+Number(d.mCard)+Number(d.mNeft)+Number(d.pCash)+Number(d.pUpi)+Number(d.pCard)+Number(d.pNeft);
         
         btn.disabled = true;
+        btn.innerText = "SAVING...";
         try {
             await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) });
             alert("Success! Data Saved.");
             location.reload();
-        } catch (e) { alert("Save Error!"); btn.disabled = false; }
+        } catch (e) { alert("Save Error!"); btn.disabled = false; btn.innerText = "SAVE & GENERATE REPORT"; }
     }
 
     function copyDSR() {
-        navigator.clipboard.writeText(document.getElementById('reportDisplay').innerText);
+        const text = document.getElementById('reportDisplay').innerText;
+        const elem = document.createElement('textarea');
+        document.body.appendChild(elem);
+        elem.value = text;
+        elem.select();
+        document.execCommand('copy');
+        document.body.removeChild(elem);
         alert("Report Copied!");
     }
 </script>
