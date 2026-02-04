@@ -3,234 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAISO DSR - Premium Admin</title>
+    <title>TAISO DSR | ELITE ADMIN</title>
     <style>
-        :root { 
-            --gold: #d4af37; 
-            --gold-glow: rgba(212, 175, 55, 0.3);
-            --dark-bg: #0a0a0a; 
-            --card-bg: #1a1a1a; 
-            --input-bg: #252525;
-            --text: #e0e0e0; 
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Montserrat:wght@300;500;800&display=swap');
+
+        :root {
+            --gold-glossy: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+            --gold-text: #e1b382;
+            --deep-black: #000000;
+            --card-bg: rgba(15, 15, 15, 0.85);
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
-            font-family: 'Poppins', 'Segoe UI', sans-serif; 
-            background: var(--dark-bg); 
-            background-image: radial-gradient(circle at 50% -20%, #2c2c2c, #0a0a0a);
-            color: var(--text); 
-            margin: 0; 
-            padding: 20px 10px; 
-            display: flex;
-            justify-content: center;
+            background-color: var(--deep-black); 
+            color: #ffffff; 
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            padding: 20px 15px;
         }
 
-        .container { max-width: 480px; width: 100%; }
-
-        .header { 
-            text-align: center; 
-            margin-bottom: 30px; 
+        #sparks-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0; opacity: 0.6;
         }
 
-        .header h1 { 
-            color: var(--gold); 
-            margin: 0; 
-            font-size: 28px; 
-            letter-spacing: 4px; 
-            text-transform: uppercase;
-            text-shadow: 0 0 15px var(--gold-glow);
+        .container { 
+            max-width: 500px; margin: auto; position: relative; z-index: 1; 
         }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        
+        .logo { 
+            font-family: 'Syncopate', sans-serif; 
+            background: var(--gold-glossy);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            font-size: 1.5rem; letter-spacing: 5px;
+            animation: goldFlow 3s linear infinite;
+            background-size: 200% auto;
+        }
+
+        @keyframes goldFlow { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
         .section { 
             background: var(--card-bg); 
-            padding: 20px; 
-            border-radius: 15px; 
-            margin-bottom: 20px; 
-            border: 1px solid #333; 
+            padding: 25px; 
+            border: 1px solid #1a1a1a; 
+            border-left: 3px solid #bf953f;
+            border-radius: 4px; 
+            margin-bottom: 25px; 
+            backdrop-filter: blur(15px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transition: transform 0.3s ease;
         }
-
-        .section:hover { border-color: var(--gold); }
 
         .section-title { 
-            color: var(--gold); 
-            font-weight: 600; 
-            margin-bottom: 15px; 
-            font-size: 13px; 
-            text-transform: uppercase; 
-            display: flex; 
-            align-items: center;
-            gap: 10px;
+            font-family: 'Syncopate'; 
+            color: var(--gold-text); 
+            font-size: 0.8rem; 
+            margin-bottom: 20px; 
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
-        .section-title::before {
-            content: "";
-            width: 3px;
-            height: 15px;
-            background: var(--gold);
-            display: inline-block;
-        }
-
-        label { display: block; font-size: 10px; margin-bottom: 5px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+        label { display: block; font-size: 9px; margin-bottom: 8px; color: #666; text-transform: uppercase; font-weight: 800; letter-spacing: 1.5px; }
 
         input { 
-            width: 100%; 
-            padding: 12px; 
-            margin-bottom: 12px; 
-            box-sizing: border-box; 
-            background: var(--input-bg); 
-            border: 1px solid #444; 
-            color: white; 
-            border-radius: 8px; 
-            font-size: 16px; 
-            text-align: center;
-            transition: all 0.3s;
+            width: 100%; padding: 12px; margin-bottom: 15px; background: #000; 
+            border: 1px solid #222; color: #fff; border-radius: 0px; 
+            font-size: 16px; text-align: center; font-family: 'Montserrat';
+            transition: 0.3s;
         }
 
-        input:focus { 
-            outline: none; 
-            border-color: var(--gold); 
-            box-shadow: 0 0 10px var(--gold-glow);
-        }
+        input:focus { border-color: #bf953f; outline: none; background: #050505; }
 
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
-        button { 
-            width: 100%; 
-            padding: 16px; 
-            border: none; 
-            border-radius: 10px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            font-size: 15px; 
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s;
-        }
-
-        .btn-main { 
-            background: linear-gradient(135deg, #d4af37, #f2d06b); 
-            color: black; 
+        .gold-btn { 
+            width: 100%;
+            background: var(--gold-glossy); background-size: 200% auto; animation: goldFlow 3s linear infinite;
+            color: #000; border: none; padding: 20px; font-weight: 900; cursor: pointer; 
+            text-transform: uppercase; font-size: 11px; letter-spacing: 2px;
             margin-top: 10px;
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
         }
-
-        .btn-main:active { transform: scale(0.98); }
 
         .btn-history { 
-            background: transparent; 
-            color: var(--gold); 
-            border: 1px solid var(--gold); 
-            font-size: 12px; 
-            padding: 10px;
-            margin-bottom: 5px;
+            background: transparent; border: 1px solid #bf953f; color: var(--gold-text); 
+            padding: 10px; font-size: 10px; margin-bottom: 10px; cursor: pointer;
+            width: 100%; text-transform: uppercase; font-weight: 800;
         }
 
-        .btn-copy { background: #25D366; color: white; margin-bottom: 10px; }
+        .btn-copy { background: #25D366; color: white; margin-top: 15px; }
 
         #reportPage { display: none; }
 
         .report-box { 
-            background: #fff; 
-            color: #1a1a1a; 
-            padding: 25px; 
-            border-radius: 12px; 
-            font-family: 'Courier New', monospace; 
-            white-space: pre-wrap; 
-            font-size: 14px; 
-            line-height: 1.7; 
-            border-left: 8px solid var(--gold);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            background: #fff; color: #000; padding: 30px; border-radius: 2px; 
+            font-family: 'Courier New', monospace; white-space: pre-wrap; 
+            font-size: 14px; line-height: 1.8; border-left: 10px solid #bf953f;
+            box-shadow: 0 0 50px rgba(191,149,63,0.2);
         }
 
-        /* Responsive Fix */
-        @media (max-width: 400px) {
-            .grid-2 { grid-template-columns: 1fr; }
-        }
+        footer { text-align: center; padding: 40px 0; color: #333; font-size: 9px; font-weight: 800; letter-spacing: 2px; }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div id="entryPage" class="container">
-    <div class="header"><h1>TAISO DSR</h1></div>
-    
-    <div class="section">
-        <label>Select Date</label>
-        <input type="date" id="date">
-        <button class="btn-history" onclick="fetchHistory()">VIEW HISTORY (REPORT)</button>
-    </div>
+    <canvas id="sparks-canvas"></canvas>
 
-    <div class="section">
-        <div class="section-title">1. Membership Sale</div>
-        <div class="grid-2">
-            <div><label>Cash</label><input type="number" id="mCash" value="0"></div>
-            <div><label>UPI</label><input type="number" id="mUpi" value="0"></div>
-            <div><label>Cheque</label><input type="number" id="mCheque" value="0"></div>
-            <div><label>NEFT</label><input type="number" id="mNeft" value="0"></div>
-            <div><label>Card Credit</label><input type="number" id="mCredit" value="0"></div>
-            <div><label>Card Debit</label><input type="number" id="mDebit" value="0"></div>
+    <div id="entryPage" class="container">
+        <div class="header">
+            <div class="logo">TAISO DSR</div>
+            <p style="font-size: 9px; color: #666; letter-spacing: 3px; margin-top: 5px;">THE PRIVILEGE ADMIN</p>
         </div>
-    </div>
-
-    <div class="section">
-        <div class="section-title">2. PT Collection</div>
-        <div class="grid-2">
-            <div><label>Cash</label><input type="number" id="pCash" value="0"></div>
-            <div><label>UPI</label><input type="number" id="pUpi" value="0"></div>
-            <div><label>Card</label><input type="number" id="pCard" value="0"></div>
-            <div><label>NEFT</label><input type="number" id="pNeft" value="0"></div>
+        
+        <div class="section">
+            <label>Reporting Date</label>
+            <input type="date" id="date">
+            <button class="btn-history" onclick="fetchHistory()">View Archived Report</button>
         </div>
-    </div>
 
-    <div class="section">
-        <div class="section-title">3. Extra Fees</div>
-        <div class="grid-2">
-            <div><label>Transfer Fee</label><input type="number" id="transfer" value="0"></div>
-            <div><label>Freeze</label><input type="number" id="freeze" value="0"></div>
-            <div><label>Locker</label><input type="number" id="locker" value="0"></div>
+        <div class="section">
+            <div class="section-title">1. Membership Sale</div>
+            <div class="grid-2">
+                <div><label>Cash</label><input type="number" id="mCash" value="0"></div>
+                <div><label>UPI</label><input type="number" id="mUpi" value="0"></div>
+                <div><label>Cheque</label><input type="number" id="mCheque" value="0"></div>
+                <div><label>NEFT</label><input type="number" id="mNeft" value="0"></div>
+                <div><label>Card Credit</label><input type="number" id="mCredit" value="0"></div>
+                <div><label>Card Debit</label><input type="number" id="mDebit" value="0"></div>
+            </div>
         </div>
-    </div>
 
-    <div class="section">
-        <div class="section-title">4. Enquiry & Conversion</div>
-        <label>Total Enquiries (Prospect)</label><input type="number" id="enq" value="0">
-        <div class="grid-2">
-            <div><label>Gym Membership</label><input type="number" id="nSale" value="0"></div>
-            <div><label>No. of Renewal</label><input type="number" id="ren" value="0"></div>
+        <div class="section">
+            <div class="section-title">2. PT Collection</div>
+            <div class="grid-2">
+                <div><label>Cash</label><input type="number" id="pCash" value="0"></div>
+                <div><label>UPI</label><input type="number" id="pUpi" value="0"></div>
+                <div><label>Card</label><input type="number" id="pCard" value="0"></div>
+                <div><label>NEFT</label><input type="number" id="pNeft" value="0"></div>
+            </div>
         </div>
-    </div>
 
-    <div class="section">
-        <div class="section-title">5. Staff & Personal</div>
-        <label>Rohini Mam Collection</label><input type="number" id="rohini" value="0">
-        <div class="grid-2">
-            <div><label>Morning Staff</label><input type="text" id="sM" value="-"></div>
-            <div><label>Evening Staff</label><input type="text" id="sE" value="-"></div>
+        <div class="section">
+            <div class="section-title">3. Services & Fees</div>
+            <div class="grid-2">
+                <div><label>Transfer Fee</label><input type="number" id="transfer" value="0"></div>
+                <div><label>Freeze</label><input type="number" id="freeze" value="0"></div>
+                <div><label>Locker</label><input type="number" id="locker" value="0"></div>
+            </div>
         </div>
+
+        <div class="section">
+            <div class="section-title">4. Conversions</div>
+            <label>Total Enquiries (Prospect)</label><input type="number" id="enq" value="0">
+            <div class="grid-2">
+                <div><label>Gym Membership</label><input type="number" id="nSale" value="0"></div>
+                <div><label>No. of Renewal</label><input type="number" id="ren" value="0"></div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">5. Operations</div>
+            <label>Rohini Mam Collection</label><input type="number" id="rohini" value="0">
+            <div class="grid-2">
+                <div><label>Morning Shift</label><input type="text" id="sM" value="-"></div>
+                <div><label>Evening Shift</label><input type="text" id="sE" value="-"></div>
+            </div>
+        </div>
+
+        <button class="gold-btn" id="submitBtn" onclick="processAndSync()">Commit Data & Generate</button>
+        <footer>📍 BANER, PUNE | ELITE BUSINESS STUDIO</footer>
     </div>
 
-    <button class="btn-main" id="submitBtn" onclick="processAndSync()">SAVE & GENERATE REPORT</button>
-</div>
+    <div id="reportPage" class="container">
+        <div class="header"><div class="logo">FINAL REPORT</div></div>
+        <div id="reportDisplay" class="report-box"></div>
+        <button class="gold-btn btn-copy" onclick="copyDSR()">Copy for WhatsApp</button>
+        <button class="gold-btn" style="background: #111; color: #fff; border: 1px solid #333;" onclick="location.reload()">Back to Entry</button>
+    </div>
 
-<div id="reportPage" class="container">
-    <div class="header"><h1>FINAL DSR</h1></div>
-    <div id="reportDisplay" class="report-box"></div>
-    <button class="btn-copy" onclick="copyDSR()">COPY FOR WHATSAPP</button>
-    <button class="btn-main" onclick="location.reload()">BACK TO ENTRY</button>
-</div>
+    <script>
+        document.getElementById('date').valueAsDate = new Date();
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxQ_BQbUT30vC7xJ1O6DRmN7f6RSgxkoMYDyqrW0m-XB856KN8WIqNeusJi-25Ok2iWCg/exec";
 
-<script>
-    document.getElementById('date').valueAsDate = new Date();
-    
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxQ_BQbUT30vC7xJ1O6DRmN7f6RSgxkoMYDyqrW0m-XB856KN8WIqNeusJi-25Ok2iWCg/exec";
+        // Logic functions (Same as before to maintain data accuracy)
+        function generateFormat(d, tmcTill, ptTill, tmcCash, tmcUpi, tmcCredit, tmcDebit, tmcNeft, tmcCheque, rohiniTotal) {
+            const gymToday = Number(d.mCash)+Number(d.mUpi)+Number(d.mCheque)+Number(d.mCredit)+Number(d.mDebit)+Number(d.mNeft);
+            const ptToday = Number(d.pCash)+Number(d.pUpi)+Number(d.pCard)+Number(d.pNeft);
 
-    function generateFormat(d, tmcTill, ptTill, tmcCash, tmcUpi, tmcCredit, tmcDebit, tmcNeft, tmcCheque, rohiniTotal) {
-        const gymToday = Number(d.mCash)+Number(d.mUpi)+Number(d.mCheque)+Number(d.mCredit)+Number(d.mDebit)+Number(d.mNeft);
-        const ptToday = Number(d.pCash)+Number(d.pUpi)+Number(d.pCard)+Number(d.pNeft);
-
-        return `Date:- ${d.date}
+            return `Date:- ${d.date}
 
 TMC Till Date : ${Number(tmcTill).toLocaleString()}/-
 
@@ -270,70 +233,103 @@ Rohini mam:- ${Number(rohiniTotal).toLocaleString()}/-
 Shifting:-
 Morning shift :- ${d.shiftM}
 Evening shift:- ${d.shiftE}`;
-    }
+        }
 
-    async function fetchHistory() {
-        const dv = document.getElementById('date').value;
-        if(!dv) return alert("Date select karein!");
-        
-        try {
-            const resp = await fetch(`${SCRIPT_URL}?date=${dv}`);
-            const data = await resp.json();
-            if (data.status === "Found") {
-                const r = data.row;
-                const d = {
-                    date: dv, mCash: r[1], mUpi: r[2], mCredit: r[3], mNeft: r[4],
-                    pCash: r[5], pUpi: r[6], pCard: r[7], pNeft: r[8],
-                    enq: r[9], nSale: r[10], ren: r[11], rohini: r[12],
-                    transfer: r[14]||0, freeze: r[15]||0, locker: r[16]||0,
-                    mDebit: r[17]||0, mCheque: r[18]||0, shiftM: r[19]||"-", shiftE: r[20]||"-"
-                };
-                document.getElementById('reportDisplay').innerText = generateFormat(d, data.tmcTillDate, data.ptTillDate, data.tmcCash, data.tmcUpi, data.tmcCredit, data.tmcDebit, data.tmcNeft, data.tmcCheque, data.rohiniTotal);
-                document.getElementById('entryPage').style.display = 'none';
-                document.getElementById('reportPage').style.display = 'block';
-            } else { alert("Data nahi mila!"); }
-        } catch (e) { alert("Fetch error!"); }
-    }
+        async function fetchHistory() {
+            const dv = document.getElementById('date').value;
+            try {
+                const resp = await fetch(`${SCRIPT_URL}?date=${dv}`);
+                const data = await resp.json();
+                if (data.status === "Found") {
+                    const r = data.row;
+                    const d = {
+                        date: dv, mCash: r[1], mUpi: r[2], mCredit: r[3], mNeft: r[4],
+                        pCash: r[5], pUpi: r[6], pCard: r[7], pNeft: r[8],
+                        enq: r[9], nSale: r[10], ren: r[11], rohini: r[12],
+                        transfer: r[14]||0, freeze: r[15]||0, locker: r[16]||0,
+                        mDebit: r[17]||0, mCheque: r[18]||0, shiftM: r[19]||"-", shiftE: r[20]||"-"
+                    };
+                    document.getElementById('reportDisplay').innerText = generateFormat(d, data.tmcTillDate, data.ptTillDate, data.tmcCash, data.tmcUpi, data.tmcCredit, data.tmcDebit, data.tmcNeft, data.tmcCheque, data.rohiniTotal);
+                    document.getElementById('entryPage').style.display = 'none';
+                    document.getElementById('reportPage').style.display = 'block';
+                } else { alert("Record not found."); }
+            } catch (e) { alert("Network Error"); }
+        }
 
-    async function processAndSync() {
-        const btn = document.getElementById('submitBtn');
-        const d = {
-            date: document.getElementById('date').value,
-            mCash: document.getElementById('mCash').value || 0,
-            mUpi: document.getElementById('mUpi').value || 0,
-            mCheque: document.getElementById('mCheque').value || 0,
-            mNeft: document.getElementById('mNeft').value || 0,
-            mCredit: document.getElementById('mCredit').value || 0,
-            mDebit: document.getElementById('mDebit').value || 0,
-            pCash: document.getElementById('pCash').value || 0,
-            pUpi: document.getElementById('pUpi').value || 0,
-            pCard: document.getElementById('pCard').value || 0,
-            pNeft: document.getElementById('pNeft').value || 0,
-            transfer: document.getElementById('transfer').value || 0,
-            freeze: document.getElementById('freeze').value || 0,
-            locker: document.getElementById('locker').value || 0,
-            enq: document.getElementById('enq').value || 0,
-            nSale: document.getElementById('nSale').value || 0,
-            ren: document.getElementById('ren').value || 0,
-            rohini: document.getElementById('rohini').value || 0,
-            shiftM: document.getElementById('sM').value || "-",
-            shiftE: document.getElementById('sE').value || "-"
-        };
-        d.todayTotal = Number(d.mCash)+Number(d.mUpi)+Number(d.mCheque)+Number(d.mCredit)+Number(d.mDebit)+Number(d.mNeft)+Number(d.pCash)+Number(d.pUpi)+Number(d.pCard)+Number(d.pNeft);
-        
-        btn.disabled = true;
-        btn.innerText = "SAVING DATA...";
-        try {
-            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) });
-            alert("Report Saved Successfully!");
-            location.reload();
-        } catch (e) { alert("Save Error!"); btn.disabled = false; }
-    }
+        async function processAndSync() {
+            const btn = document.getElementById('submitBtn');
+            const d = {
+                date: document.getElementById('date').value,
+                mCash: document.getElementById('mCash').value || 0,
+                mUpi: document.getElementById('mUpi').value || 0,
+                mCheque: document.getElementById('mCheque').value || 0,
+                mNeft: document.getElementById('mNeft').value || 0,
+                mCredit: document.getElementById('mCredit').value || 0,
+                mDebit: document.getElementById('mDebit').value || 0,
+                pCash: document.getElementById('pCash').value || 0,
+                pUpi: document.getElementById('pUpi').value || 0,
+                pCard: document.getElementById('pCard').value || 0,
+                pNeft: document.getElementById('pNeft').value || 0,
+                transfer: document.getElementById('transfer').value || 0,
+                freeze: document.getElementById('freeze').value || 0,
+                locker: document.getElementById('locker').value || 0,
+                enq: document.getElementById('enq').value || 0,
+                nSale: document.getElementById('nSale').value || 0,
+                ren: document.getElementById('ren').value || 0,
+                rohini: document.getElementById('rohini').value || 0,
+                shiftM: document.getElementById('sM').value || "-",
+                shiftE: document.getElementById('sE').value || "-"
+            };
+            d.todayTotal = Number(d.mCash)+Number(d.mUpi)+Number(d.mCheque)+Number(d.mCredit)+Number(d.mDebit)+Number(d.mNeft)+Number(d.pCash)+Number(d.pUpi)+Number(d.pCard)+Number(d.pNeft);
+            
+            btn.disabled = true;
+            btn.innerText = "SYNCHRONIZING...";
+            try {
+                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) });
+                alert("Vault Updated Successfully!");
+                location.reload();
+            } catch (e) { alert("Sync Failed!"); btn.disabled = false; }
+        }
 
-    function copyDSR() {
-        const text = document.getElementById('reportDisplay').innerText;
-        navigator.clipboard.writeText(text).then(() => alert("Copied to Clipboard!"));
-    }
-</script>
+        function copyDSR() {
+            const text = document.getElementById('reportDisplay').innerText;
+            navigator.clipboard.writeText(text).then(() => alert("Report Copied to Clipboard"));
+        }
+
+        // --- BACKGROUND SPARKS ANIMATION ---
+        const canvas = document.getElementById('sparks-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() { this.init(); }
+            init() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.5 + 0.2;
+                this.speedY = Math.random() * 0.3 - 0.15;
+                this.speedX = Math.random() * 0.3 - 0.15;
+                this.opacity = Math.random() * 0.5;
+            }
+            update() {
+                this.y += this.speedY; this.x += this.speedX;
+                if (this.y < 0 || this.y > canvas.height) this.init();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(252, 246, 186, ${this.opacity})`;
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+        function setup() { for (let i = 0; i < 100; i++) particles.push(new Particle()); }
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        setup(); animate();
+    </script>
 </body>
 </html>
