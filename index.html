@@ -1,197 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAISO DSR - Smart Admin</title>
-    <style>
-        :root { --gold: #d4af37; --dark-bg: #121212; --card-bg: #1e1e1e; --text: #ffffff; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark-bg); color: var(--text); margin: 0; padding: 15px; }
-        .container { max-width: 450px; margin: auto; }
-        .header { text-align: center; border-bottom: 2px solid var(--gold); margin-bottom: 20px; padding-bottom: 10px; }
-        .header h1 { color: var(--gold); margin: 0; font-size: 24px; letter-spacing: 2px; }
-        .section { background: var(--card-bg); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #333; }
-        .section-title { color: var(--gold); font-weight: bold; margin-bottom: 12px; font-size: 14px; text-transform: uppercase; border-left: 3px solid var(--gold); padding-left: 8px; }
-        label { display: block; font-size: 11px; margin-bottom: 5px; color: #888; text-transform: uppercase; }
-        input { width: 100%; padding: 12px; margin-bottom: 10px; box-sizing: border-box; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 6px; font-size: 16px; text-align: center; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        button { width: 100%; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
-        .btn-main { background: var(--gold); color: black; }
-        .btn-history { background: #3a3a3a; color: var(--gold); border: 1px solid var(--gold); font-size: 14px; margin-bottom: 10px; }
-        .btn-copy { background: #25D366; color: white; }
-        #reportPage { display: none; }
-        .report-box { background: white; color: black; padding: 25px; border-radius: 8px; font-family: monospace; white-space: pre-wrap; font-size: 15px; line-height: 1.8; border-left: 5px solid var(--gold); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAISO DSR - Smart Admin</title>
+
+<style>
+:root{
+  --gold:#d4af37;
+  --dark-bg:#121212;
+  --card-bg:#1e1e1e;
+  --text:#ffffff;
+}
+body{
+  font-family:Segoe UI,Arial,sans-serif;
+  background:var(--dark-bg);
+  color:var(--text);
+  margin:0;
+  padding:15px;
+}
+.container{max-width:450px;margin:auto;}
+.header{text-align:center;border-bottom:2px solid var(--gold);margin-bottom:20px;padding-bottom:10px;}
+.header h1{color:var(--gold);margin:0;font-size:24px;letter-spacing:2px;}
+.section{background:var(--card-bg);padding:15px;border-radius:10px;margin-bottom:15px;border:1px solid #333;}
+.section-title{color:var(--gold);font-weight:bold;margin-bottom:12px;font-size:14px;text-transform:uppercase;border-left:3px solid var(--gold);padding-left:8px;}
+label{display:block;font-size:11px;margin-bottom:5px;color:#888;text-transform:uppercase;}
+input{width:100%;padding:12px;margin-bottom:10px;box-sizing:border-box;background:#2a2a2a;border:1px solid #444;color:white;border-radius:6px;font-size:16px;text-align:center;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+button{width:100%;padding:15px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;font-size:16px;margin-top:10px;}
+.btn-main{background:var(--gold);color:black;}
+.btn-history{background:#3a3a3a;color:var(--gold);border:1px solid var(--gold);font-size:14px;margin-bottom:10px;}
+.btn-copy{background:#25D366;color:white;}
+#reportPage{display:none;}
+.report-box{
+  background:white;
+  color:black;
+  padding:25px;
+  border-radius:8px;
+  font-family:monospace;
+  white-space:pre-wrap;
+  font-size:15px;
+  line-height:1.8;
+  border-left:5px solid var(--gold);
+}
+</style>
 </head>
+
 <body>
 
 <div id="entryPage" class="container">
-    <div class="header"><h1>TAISO DSR</h1></div>
-    
-    <div class="section">
-        <label>Select Date</label>
-        <input type="date" id="date">
-        <button class="btn-history" onclick="fetchHistory()">VIEW HISTORY (REPORT)</button>
-    </div>
+  <div class="header"><h1>TAISO DSR</h1></div>
 
-    <div class="section">
-        <div class="section-title">1. Membership Sale</div>
-        <div class="grid-2">
-            <div><label>Cash</label><input type="number" id="mCash" value="0"></div>
-            <div><label>UPI</label><input type="number" id="mUpi" value="0"></div>
-            <div><label>Card</label><input type="number" id="mCard" value="0"></div>
-            <div><label>NEFT</label><input type="number" id="mNeft" value="0"></div>
-        </div>
-    </div>
+  <div class="section">
+    <label>Select Date</label>
+    <input type="date" id="date">
+    <button class="btn-history" onclick="fetchHistory()">VIEW HISTORY (REPORT)</button>
+  </div>
 
-    <div class="section">
-        <div class="section-title">2. PT Collection</div>
-        <div class="grid-2">
-            <div><label>Cash</label><input type="number" id="pCash" value="0"></div>
-            <div><label>UPI</label><input type="number" id="pUpi" value="0"></div>
-            <div><label>Card</label><input type="number" id="pCard" value="0"></div>
-            <div><label>NEFT</label><input type="number" id="pNeft" value="0"></div>
-        </div>
+  <div class="section">
+    <div class="section-title">1. Membership Sale</div>
+    <div class="grid-2">
+      <div><label>Cash</label><input type="number" id="mCash" value="0"></div>
+      <div><label>UPI</label><input type="number" id="mUpi" value="0"></div>
+      <div><label>Card</label><input type="number" id="mCard" value="0"></div>
+      <div><label>NEFT</label><input type="number" id="mNeft" value="0"></div>
     </div>
+  </div>
 
-    <div class="section">
-        <div class="section-title">3. Enquiry & Conversion</div>
-        <label>Total Enquiries</label><input type="number" id="enq" value="0">
-        <div class="grid-2">
-            <div><label>New Sales</label><input type="number" id="nSale" value="0"></div>
-            <div><label>Renewals</label><input type="number" id="ren" value="0"></div>
-        </div>
+  <div class="section">
+    <div class="section-title">2. PT Collection</div>
+    <div class="grid-2">
+      <div><label>Cash</label><input type="number" id="pCash" value="0"></div>
+      <div><label>UPI</label><input type="number" id="pUpi" value="0"></div>
+      <div><label>Card</label><input type="number" id="pCard" value="0"></div>
+      <div><label>NEFT</label><input type="number" id="pNeft" value="0"></div>
     </div>
+  </div>
 
-    <div class="section">
-        <div class="section-title">4. Personal Collection</div>
-        <label>Rohini Mam Collection</label>
-        <input type="number" id="rohini" value="0">
+  <div class="section">
+    <div class="section-title">3. Enquiry & Conversion</div>
+    <label>Total Enquiries</label><input type="number" id="enq" value="0">
+    <div class="grid-2">
+      <div><label>New Sales</label><input type="number" id="nSale" value="0"></div>
+      <div><label>Renewals</label><input type="number" id="ren" value="0"></div>
     </div>
+  </div>
 
-    <div class="section">
-        <div class="section-title">5. Staffing</div>
-        <label>Morning Staff</label><input type="text" id="sM" value="-">
-        <label>Evening Staff</label><input type="text" id="sE" value="-">
-    </div>
+  <div class="section">
+    <div class="section-title">4. Personal Collection</div>
+    <label>Rohini Mam Collection</label>
+    <input type="number" id="rohini" value="0">
+  </div>
 
-    <button class="btn-main" id="submitBtn" onclick="processAndSync()">SAVE & GENERATE REPORT</button>
+  <div class="section">
+    <div class="section-title">5. Staffing</div>
+    <label>Morning Staff</label><input type="text" id="sM" value="-">
+    <label>Evening Staff</label><input type="text" id="sE" value="-">
+  </div>
+
+  <button class="btn-main" onclick="processAndSync()">SAVE & GENERATE REPORT</button>
 </div>
 
 <div id="reportPage" class="container">
-    <div class="header"><h1>FINAL DSR</h1></div>
-    <div id="reportDisplay" class="report-box"></div>
-    <button class="btn-copy" onclick="copyDSR()">COPY FOR WHATSAPP</button>
-    <button class="btn-main" onclick="location.reload()">BACK TO ENTRY</button>
+  <div class="header"><h1>FINAL DSR</h1></div>
+  <div id="reportDisplay" class="report-box"></div>
+  <button class="btn-copy" onclick="copyDSR()">COPY FOR WHATSAPP</button>
+  <button class="btn-main" onclick="location.reload()">BACK</button>
 </div>
 
 <script>
-    document.getElementById('date').valueAsDate = new Date();
-    
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxcruzz8vjV7syiaONOJc7K_7wSeT7J7fa_uKyYHv5fOpfWLRK9-Tn4nVwIpVp5CelwtQ/exec";
+document.getElementById("date").valueAsDate = new Date();
 
-    function generateFormat(d, tmc, ptTillDate, tmcCash, tmcUpi, tmcCard, tmcNeft, rohiniTotal) {
-        const tCashToday = Number(d.mCash) + Number(d.pCash);
-        const tUpiToday = Number(d.mUpi) + Number(d.pUpi);
-        const tCardToday = Number(d.mCard) + Number(d.pCard);
-        const tNeftToday = Number(d.mNeft) + Number(d.pNeft);
-        const grandTotalToday = tCashToday + tUpiToday + tCardToday + tNeftToday;
-        const tPtToday = Number(d.pCash) + Number(d.pUpi) + Number(d.pCard) + Number(d.pNeft);
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby-GYQhhE6_BXQp0394Wi101ubkTw6-cd0XWwd06UoTifXiFOKgQYsC9OBDdUEE54VqFA/exec";
 
-        return `Date:- ${d.date}
+function generateReport(d, api){
+  const tCash = +d.mCash + +d.pCash;
+  const tUpi  = +d.mUpi  + +d.pUpi;
+  const tCard = +d.mCard + +d.pCard;
+  const tNeft = +d.mNeft + +d.pNeft;
+  const total = tCash + tUpi + tCard + tNeft;
+  const ptToday = +d.pCash + +d.pUpi + +d.pCard + +d.pNeft;
 
-TMC (This Month): ${Number(tmc).toLocaleString()}/-
+return `Date: ${d.date}
 
-Gym Today’s Collection: ${grandTotalToday.toLocaleString()}/-
-Cash: ${tCashToday.toLocaleString()}/-
-UPI: ${tUpiToday.toLocaleString()}/-
-Card: ${tCardToday.toLocaleString()}/-
-Neft: ${tNeftToday.toLocaleString()}/-
+TMC (1 → ${d.date}): ${api.tmcTotal}/-
 
-PT Collection (This Month): ${Number(ptTillDate).toLocaleString()}/-
-Today's PT Collection: ${tPtToday.toLocaleString()}/-
-Cash: ${Number(d.pCash).toLocaleString()}/-
-UPI: ${Number(d.pUpi).toLocaleString()}/-
-Card: ${Number(d.pCard).toLocaleString()}/-
-Neft: ${Number(d.pNeft).toLocaleString()}/-
+Gym Today Collection: ${total}/-
+Cash: ${tCash}/-
+UPI: ${tUpi}/-
+Card: ${tCard}/-
+NEFT: ${tNeft}/-
 
-Today's Total Enquiries: ${d.enq}
-Gym Memberships: ${Number(d.nSale)+Number(d.ren)}
-New Sale: ${d.nSale}
+PT Collection (1 → ${d.date}): ${api.ptTillDate}/-
+Today's PT: ${ptToday}/-
+
+Enquiries: ${d.enq}
+Memberships: ${+d.nSale + +d.ren}
+New: ${d.nSale}
 Renewal: ${d.ren}
 
---- MONTHLY SUMMARY ---
-TMC Cash: ${Number(tmcCash).toLocaleString()}/-
-TMC UPI: ${Number(tmcUpi).toLocaleString()}/-
-TMC Card: ${Number(tmcCard).toLocaleString()}/-
-TMC Neft: ${Number(tmcNeft).toLocaleString()}/-
+--- MONTH SUMMARY ---
+Cash: ${api.tmcCash}/-
+UPI: ${api.tmcUpi}/-
+Card: ${api.tmcCard}/-
+NEFT: ${api.tmcNeft}/-
 
 Personal Collection:
-Rohini Mam (This Month): ${Number(rohiniTotal).toLocaleString()}/-
+Rohini Mam: ${api.rohiniTotal}/-
 
 Shift:
 Morning: ${d.shiftM}
 Evening: ${d.shiftE}`;
-    }
+}
 
-    async function fetchHistory() {
-        const dateVal = document.getElementById('date').value;
-        if(!dateVal) return alert("Select Date!");
-        
-        try {
-            const resp = await fetch(`${SCRIPT_URL}?date=${dateVal}`);
-            const data = await resp.json();
-            if (data.status === "Found") {
-                const r = data.row;
-                const d = {
-                    date: dateVal, mCash: r[1], mUpi: r[2], mCard: r[3], mNeft: r[4],
-                    pCash: r[5], pUpi: r[6], pCard: r[7], pNeft: r[8],
-                    enq: r[9], nSale: r[10], ren: r[11],
-                    rohini: r[12], 
-                    shiftM: r[15], shiftE: r[16]
-                };
-                document.getElementById('reportDisplay').innerText = generateFormat(d, data.tmcTotal, data.ptTillDate, data.tmcCash, data.tmcUpi, data.tmcCard, data.tmcNeft, data.rohiniTotal);
-                document.getElementById('entryPage').style.display = 'none';
-                document.getElementById('reportPage').style.display = 'block';
-            } else { alert("Data nahi mila!"); }
-        } catch (e) { alert("Error fetching data!"); }
-    }
+async function fetchHistory(){
+  const date = document.getElementById("date").value;
+  if(!date) return alert("Date select karo");
 
-    async function processAndSync() {
-        const btn = document.getElementById('submitBtn');
-        const d = {
-            date: document.getElementById('date').value,
-            mCash: document.getElementById('mCash').value || 0,
-            mUpi: document.getElementById('mUpi').value || 0,
-            mCard: document.getElementById('mCard').value || 0,
-            mNeft: document.getElementById('mNeft').value || 0,
-            pCash: document.getElementById('pCash').value || 0,
-            pUpi: document.getElementById('pUpi').value || 0,
-            pCard: document.getElementById('pCard').value || 0,
-            pNeft: document.getElementById('pNeft').value || 0,
-            enq: document.getElementById('enq').value || 0,
-            nSale: document.getElementById('nSale').value || 0,
-            ren: document.getElementById('ren').value || 0,
-            rohini: document.getElementById('rohini').value || 0,
-            shiftM: document.getElementById('sM').value || "-",
-            shiftE: document.getElementById('sE').value || "-"
-        };
-        d.todayTotal = Number(d.mCash)+Number(d.mUpi)+Number(d.mCard)+Number(d.mNeft)+Number(d.pCash)+Number(d.pUpi)+Number(d.pCard)+Number(d.pNeft);
-        
-        btn.disabled = true;
-        try {
-            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) });
-            alert("Success! Data Saved.");
-            location.reload();
-        } catch (e) { alert("Save Error!"); btn.disabled = false; }
-    }
+  const res = await fetch(`${SCRIPT_URL}?date=${date}`);
+  const data = await res.json();
 
-    function copyDSR() {
-        const text = document.getElementById('reportDisplay').innerText;
-        navigator.clipboard.writeText(text).then(() => {
-            alert("Report Copied!");
-        });
-    }
+  if(data.status !== "Found") return alert("Data nahi mila");
+
+  const r = data.row;
+  const d = {
+    date,
+    mCash:r[1], mUpi:r[2], mCard:r[3], mNeft:r[4],
+    pCash:r[5], pUpi:r[6], pCard:r[7], pNeft:r[8],
+    enq:r[9], nSale:r[10], ren:r[11],
+    shiftM:r[14], shiftE:r[15]
+  };
+
+  document.getElementById("reportDisplay").innerText =
+    generateReport(d,data);
+
+  entryPage.style.display="none";
+  reportPage.style.display="block";
+}
+
+async function processAndSync(){
+  const d={
+    date:date.value,
+    mCash:mCash.value,mUpi:mUpi.value,mCard:mCard.value,mNeft:mNeft.value,
+    pCash:pCash.value,pUpi:pUpi.value,pCard:pCard.value,pNeft:pNeft.value,
+    enq:enq.value,nSale:nSale.value,ren:ren.value,
+    rohini:rohini.value,
+    shiftM:sM.value,shiftE:sE.value
+  };
+
+  d.todayTotal =
+    +d.mCash+ +d.mUpi+ +d.mCard+ +d.mNeft+
+    +d.pCash+ +d.pUpi+ +d.pCard+ +d.pNeft;
+
+  await fetch(SCRIPT_URL,{
+    method:"POST",
+    mode:"no-cors",
+    body:JSON.stringify(d)
+  });
+
+  alert("Saved Successfully");
+  location.reload();
+}
+
+function copyDSR(){
+  navigator.clipboard.writeText(reportDisplay.innerText);
+  alert("Copied for WhatsApp");
+}
 </script>
+
 </body>
 </html>
