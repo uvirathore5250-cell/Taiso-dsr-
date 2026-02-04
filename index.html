@@ -3,25 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAISO DSR - Smart Admin</title>
+    <title>TAISO DSR - Premium Admin</title>
     <style>
-        :root { --gold: #d4af37; --dark-bg: #121212; --card-bg: #1e1e1e; --text: #ffffff; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--dark-bg); color: var(--text); margin: 0; padding: 15px; }
-        .container { max-width: 450px; margin: auto; }
-        .header { text-align: center; border-bottom: 2px solid var(--gold); margin-bottom: 20px; padding-bottom: 10px; }
-        .header h1 { color: var(--gold); margin: 0; font-size: 24px; letter-spacing: 2px; }
-        .section { background: var(--card-bg); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #333; }
-        .section-title { color: var(--gold); font-weight: bold; margin-bottom: 12px; font-size: 14px; text-transform: uppercase; border-left: 3px solid var(--gold); padding-left: 8px; }
-        label { display: block; font-size: 11px; margin-bottom: 5px; color: #888; text-transform: uppercase; }
-        input { width: 100%; padding: 10px; margin-bottom: 10px; box-sizing: border-box; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 6px; font-size: 15px; text-align: center; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        button { width: 100%; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
-        .btn-main { background: var(--gold); color: black; }
-        .btn-history { background: #3a3a3a; color: var(--gold); border: 1px solid var(--gold); font-size: 14px; margin-bottom: 10px; }
-        .btn-copy { background: #25D366; color: white; }
+        :root { 
+            --gold: #d4af37; 
+            --gold-glow: rgba(212, 175, 55, 0.3);
+            --dark-bg: #0a0a0a; 
+            --card-bg: #1a1a1a; 
+            --input-bg: #252525;
+            --text: #e0e0e0; 
+        }
+        
+        body { 
+            font-family: 'Poppins', 'Segoe UI', sans-serif; 
+            background: var(--dark-bg); 
+            background-image: radial-gradient(circle at 50% -20%, #2c2c2c, #0a0a0a);
+            color: var(--text); 
+            margin: 0; 
+            padding: 20px 10px; 
+            display: flex;
+            justify-content: center;
+        }
+
+        .container { max-width: 480px; width: 100%; }
+
+        .header { 
+            text-align: center; 
+            margin-bottom: 30px; 
+        }
+
+        .header h1 { 
+            color: var(--gold); 
+            margin: 0; 
+            font-size: 28px; 
+            letter-spacing: 4px; 
+            text-transform: uppercase;
+            text-shadow: 0 0 15px var(--gold-glow);
+        }
+
+        .section { 
+            background: var(--card-bg); 
+            padding: 20px; 
+            border-radius: 15px; 
+            margin-bottom: 20px; 
+            border: 1px solid #333; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease;
+        }
+
+        .section:hover { border-color: var(--gold); }
+
+        .section-title { 
+            color: var(--gold); 
+            font-weight: 600; 
+            margin-bottom: 15px; 
+            font-size: 13px; 
+            text-transform: uppercase; 
+            display: flex; 
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: "";
+            width: 3px;
+            height: 15px;
+            background: var(--gold);
+            display: inline-block;
+        }
+
+        label { display: block; font-size: 10px; margin-bottom: 5px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; }
+
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 12px; 
+            box-sizing: border-box; 
+            background: var(--input-bg); 
+            border: 1px solid #444; 
+            color: white; 
+            border-radius: 8px; 
+            font-size: 16px; 
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        input:focus { 
+            outline: none; 
+            border-color: var(--gold); 
+            box-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        button { 
+            width: 100%; 
+            padding: 16px; 
+            border: none; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            font-size: 15px; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .btn-main { 
+            background: linear-gradient(135deg, #d4af37, #f2d06b); 
+            color: black; 
+            margin-top: 10px;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-main:active { transform: scale(0.98); }
+
+        .btn-history { 
+            background: transparent; 
+            color: var(--gold); 
+            border: 1px solid var(--gold); 
+            font-size: 12px; 
+            padding: 10px;
+            margin-bottom: 5px;
+        }
+
+        .btn-copy { background: #25D366; color: white; margin-bottom: 10px; }
+
         #reportPage { display: none; }
-        .report-box { background: white; color: black; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; white-space: pre-wrap; font-size: 14px; line-height: 1.6; border-left: 5px solid var(--gold); }
+
+        .report-box { 
+            background: #fff; 
+            color: #1a1a1a; 
+            padding: 25px; 
+            border-radius: 12px; 
+            font-family: 'Courier New', monospace; 
+            white-space: pre-wrap; 
+            font-size: 14px; 
+            line-height: 1.7; 
+            border-left: 8px solid var(--gold);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+
+        /* Responsive Fix */
+        @media (max-width: 400px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -75,10 +203,12 @@
     </div>
 
     <div class="section">
-        <div class="section-title">5. Others</div>
+        <div class="section-title">5. Staff & Personal</div>
         <label>Rohini Mam Collection</label><input type="number" id="rohini" value="0">
-        <label>Morning Staff</label><input type="text" id="sM" value="-">
-        <label>Evening Staff</label><input type="text" id="sE" value="-">
+        <div class="grid-2">
+            <div><label>Morning Staff</label><input type="text" id="sM" value="-"></div>
+            <div><label>Evening Staff</label><input type="text" id="sE" value="-"></div>
+        </div>
     </div>
 
     <button class="btn-main" id="submitBtn" onclick="processAndSync()">SAVE & GENERATE REPORT</button>
@@ -94,7 +224,6 @@
 <script>
     document.getElementById('date').valueAsDate = new Date();
     
-    // Aapka Web App URL
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxQ_BQbUT30vC7xJ1O6DRmN7f6RSgxkoMYDyqrW0m-XB856KN8WIqNeusJi-25Ok2iWCg/exec";
 
     function generateFormat(d, tmcTill, ptTill, tmcCash, tmcUpi, tmcCredit, tmcDebit, tmcNeft, tmcCheque, rohiniTotal) {
@@ -145,7 +274,7 @@ Evening shift:- ${d.shiftE}`;
 
     async function fetchHistory() {
         const dv = document.getElementById('date').value;
-        if(!dv) return alert("Please select date");
+        if(!dv) return alert("Date select karein!");
         
         try {
             const resp = await fetch(`${SCRIPT_URL}?date=${dv}`);
@@ -162,8 +291,8 @@ Evening shift:- ${d.shiftE}`;
                 document.getElementById('reportDisplay').innerText = generateFormat(d, data.tmcTillDate, data.ptTillDate, data.tmcCash, data.tmcUpi, data.tmcCredit, data.tmcDebit, data.tmcNeft, data.tmcCheque, data.rohiniTotal);
                 document.getElementById('entryPage').style.display = 'none';
                 document.getElementById('reportPage').style.display = 'block';
-            } else { alert("Data nahi mila is date ka!"); }
-        } catch (e) { alert("Fetching error!"); }
+            } else { alert("Data nahi mila!"); }
+        } catch (e) { alert("Fetch error!"); }
     }
 
     async function processAndSync() {
@@ -193,19 +322,17 @@ Evening shift:- ${d.shiftE}`;
         d.todayTotal = Number(d.mCash)+Number(d.mUpi)+Number(d.mCheque)+Number(d.mCredit)+Number(d.mDebit)+Number(d.mNeft)+Number(d.pCash)+Number(d.pUpi)+Number(d.pCard)+Number(d.pNeft);
         
         btn.disabled = true;
-        btn.innerText = "SAVING...";
+        btn.innerText = "SAVING DATA...";
         try {
             await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) });
-            alert("Success! Data Saved.");
+            alert("Report Saved Successfully!");
             location.reload();
-        } catch (e) { alert("Save Error!"); btn.disabled = false; btn.innerText = "SAVE & GENERATE REPORT"; }
+        } catch (e) { alert("Save Error!"); btn.disabled = false; }
     }
 
     function copyDSR() {
         const text = document.getElementById('reportDisplay').innerText;
-        navigator.clipboard.writeText(text).then(() => {
-            alert("Report Copied!");
-        });
+        navigator.clipboard.writeText(text).then(() => alert("Copied to Clipboard!"));
     }
 </script>
 </body>
