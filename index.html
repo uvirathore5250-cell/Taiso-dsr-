@@ -182,22 +182,22 @@
 
     <script>
         document.getElementById('date').valueAsDate = new Date();
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwoHF8qRZ5rTDOkituaHOxU_LZZbpOmhs6Z1PCiDAowFynkqh_AO8D1-DfShKJ__qpgdQ/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx_nVjjnNKt1lrrLc--w8XR0N1Y1Hw-EdpuQQjr0YAhHXzo927VkN0Kxy1pcjId7S4Zng/exec";
 
         function generateFormat(d, tmcTill, ptTill, tmcCash, tmcUpi, tmcCredit, tmcDebit, tmcNeft, tmcCheque, rohiniTotal) {
             // Gym membership today
-            const gymMembershipToday = Number(d.mCash)+Number(d.mUpi)+Number(d.mCheque)+Number(d.mCredit)+Number(d.mDebit)+Number(d.mNeft);
+            const membershipToday = Number(d.mCash)+Number(d.mUpi)+Number(d.mCheque)+Number(d.mCredit)+Number(d.mDebit)+Number(d.mNeft);
             // PT today
             const ptToday = Number(d.pCash)+Number(d.pUpi)+Number(d.pCard)+Number(d.pNeft);
             
-            // Combined total for Gym today's collection
-            const combinedToday = gymMembershipToday + ptToday;
+            // Combined gym collection for the header
+            const gymTodayCombined = membershipToday + ptToday;
 
             return `Date:- ${d.date}
 
 TMC Till Date : ${Number(tmcTill).toLocaleString()}/-
 
-Gym today’s collection: ${combinedToday.toLocaleString()}/-
+Gym today’s collection: ${gymTodayCombined.toLocaleString()}/-
 Cash: ${Number(d.mCash).toLocaleString()}/-
 Upi: ${Number(d.mUpi).toLocaleString()}/-
 Cheque: ${Number(d.mCheque).toLocaleString()}/-
