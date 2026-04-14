@@ -52,11 +52,6 @@
             overflow: hidden;
         }
 
-        .section::before {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
-        }
-
         .section-title { 
             font-family: 'Orbitron'; 
             color: var(--neon-blue); 
@@ -86,8 +81,6 @@
             border-radius: 15px; margin-top: 10px;
             box-shadow: 0 10px 20px rgba(0, 210, 255, 0.3);
         }
-
-        .neon-btn:active { transform: translateY(2px); box-shadow: none; }
 
         .btn-history { 
             background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue); 
@@ -187,7 +180,7 @@
 
     <script>
         document.getElementById('date').valueAsDate = new Date();
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzhmCa4B0OV_g8AA2-1BnEzBva4CjtgF3rxYoQZGtdLo-DYfE2RofB7x87TmT64jxWM/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwV-xPagx3KOiSetJorB0rF_M4eJmXh45ZzL3raLnGUSk4zM7wb69jTmt77ArNXFZovww/exec";
 
         function generateFormat(d, tmcTill, ptTill, tmcCash, tmcUpi, tmcCredit, tmcDebit, tmcNeft, tmcCheque, kTotal, rTotal, roTotal) {
             const membershipToday = Number(d.mCash)+Number(d.mUpi)+Number(d.mCheque)+Number(d.mCredit)+Number(d.mDebit)+Number(d.mNeft);
@@ -205,7 +198,6 @@ Cheque: ${Number(d.mCheque).toLocaleString()}/-
 Card credit: ${Number(d.mCredit).toLocaleString()}/-
 Card Debit: ${Number(d.mDebit).toLocaleString()}/-
 Neft: ${Number(d.mNeft).toLocaleString()}/-
-
 
 Total PT Collection: ${Number(ptTill).toLocaleString()}/-
 Today's PT collection: ${ptToday.toLocaleString()}/-
@@ -250,10 +242,11 @@ Evening shift:- ${d.shiftE}`;
                         date: dv, mCash: r[1], mUpi: r[2], mCredit: r[3], mNeft: r[4],
                         pCash: r[5], pUpi: r[6], pCard: r[7], pNeft: r[8],
                         enq: r[9], nSale: r[10], ren: r[11], 
-                        kanchan: r[12], igLeads: r[17]||0,
+                        kanchan: r[12], 
                         transfer: r[14]||0, freeze: r[15]||0, locker: r[16]||0,
                         mDebit: r[17]||0, mCheque: r[18]||0, 
-                        shiftM: r[20]||"-", shiftE: r[21]||"-",
+                        shiftM: r[19]||"-", shiftE: r[20]||"-",
+                        igLeads: r[21]||0,
                         rasika: r[22]||0, roshni: r[23]||0
                     };
                     document.getElementById('reportDisplay').innerText = generateFormat(d, data.tmcTillDate, data.ptTillDate, data.tmcCash, data.tmcUpi, data.tmcCredit, data.tmcDebit, data.tmcNeft, data.tmcCheque, data.kanchanTotal, data.rasikaTotal, data.roshniTotal);
