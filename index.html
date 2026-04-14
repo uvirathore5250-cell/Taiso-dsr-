@@ -153,7 +153,10 @@
 
         <div class="section">
             <div class="section-title"><span>04</span> CONVERSION METRICS</div>
-            <label>Prospect Enquiries</label><input type="number" id="enq" value="0">
+            <div class="grid-2">
+                <div><label>Prospect Enquiries</label><input type="number" id="enq" value="0"></div>
+                <div><label>Instagram Leads</label><input type="number" id="igLeads" value="0"></div>
+            </div>
             <div class="grid-2">
                 <div><label>New Sales</label><input type="number" id="nSale" value="0"></div>
                 <div><label>Renewals</label><input type="number" id="ren" value="0"></div>
@@ -161,8 +164,10 @@
         </div>
 
         <div class="section">
-            <div class="section-title"><span>05</span> STAFFING</div>
-            <label>Rohini Mam Collection</label><input type="number" id="rohini" value="0">
+            <div class="section-title"><span>05</span> STAFFING & COLLECTIONS</div>
+            <label>Kanchan Mam Collection</label><input type="number" id="kanchan" value="0">
+            <label>Rasika Mam Collection</label><input type="number" id="rasika" value="0">
+            <label>Roshni Mam Collection</label><input type="number" id="roshni" value="0">
             <div class="grid-2">
                 <div><label>AM Shift</label><input type="text" id="sM" value="-"></div>
                 <div><label>PM Shift</label><input type="text" id="sE" value="-"></div>
@@ -170,7 +175,7 @@
         </div>
 
         <button class="neon-btn" id="submitBtn" onclick="processAndSync()">SYNC TO CLOUD</button>
-        <footer>SYSTEM v3.2 // TAISO FITNESS</footer>
+        <footer>SYSTEM v3.3 // TAISO FITNESS</footer>
     </div>
 
     <div id="reportPage" class="container">
@@ -182,15 +187,11 @@
 
     <script>
         document.getElementById('date').valueAsDate = new Date();
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx_nVjjnNKt1lrrLc--w8XR0N1Y1Hw-EdpuQQjr0YAhHXzo927VkN0Kxy1pcjId7S4Zng/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzhmCa4B0OV_g8AA2-1BnEzBva4CjtgF3rxYoQZGtdLo-DYfE2RofB7x87TmT64jxWM/exec";
 
-        function generateFormat(d, tmcTill, ptTill, tmcCash, tmcUpi, tmcCredit, tmcDebit, tmcNeft, tmcCheque, rohiniTotal) {
-            // Gym membership today
+        function generateFormat(d, tmcTill, ptTill, tmcCash, tmcUpi, tmcCredit, tmcDebit, tmcNeft, tmcCheque, kTotal, rTotal, roTotal) {
             const membershipToday = Number(d.mCash)+Number(d.mUpi)+Number(d.mCheque)+Number(d.mCredit)+Number(d.mDebit)+Number(d.mNeft);
-            // PT today
             const ptToday = Number(d.pCash)+Number(d.pUpi)+Number(d.pCard)+Number(d.pNeft);
-            
-            // Combined gym collection for the header
             const gymTodayCombined = membershipToday + ptToday;
 
             return `Date:- ${d.date}
@@ -216,19 +217,22 @@ Transfer fee: ${Number(d.transfer).toLocaleString()}/-
 Freeze: ${Number(d.freeze).toLocaleString()}/-
 Locker: ${Number(d.locker).toLocaleString()}/-
 
-Today's Total Enquires [prospect]: ${d.enq}
+Today's Total Enquiries: ${d.enq}
+Instagram Leads: ${d.igLeads}
 Gym membership: ${d.nSale}
 No. of renewal: ${d.ren}
 
- TMC cash: ${Number(tmcCash).toLocaleString()}/-
- TMC cheque: ${Number(tmcCheque).toLocaleString()}/-
+TMC cash: ${Number(tmcCash).toLocaleString()}/-
+TMC cheque: ${Number(tmcCheque).toLocaleString()}/-
 TMC credit: ${Number(tmcCredit).toLocaleString()}/-
 TMC debit: ${Number(tmcDebit).toLocaleString()}/-
 TMC Neft: ${Number(tmcNeft).toLocaleString()}/-
 TMC UPI: ${Number(tmcUpi).toLocaleString()}/-
 
-Personal collection 
-Rohini mam:- ${Number(rohiniTotal).toLocaleString()}/-
+Personal collection:
+Kanchan Mam:- ${Number(kTotal).toLocaleString()}/-
+Rasika Mam:- ${Number(rTotal).toLocaleString()}/-
+Roshni Mam:- ${Number(roTotal).toLocaleString()}/-
 
 Shifting:-
 Morning shift :- ${d.shiftM}
@@ -245,15 +249,18 @@ Evening shift:- ${d.shiftE}`;
                     const d = {
                         date: dv, mCash: r[1], mUpi: r[2], mCredit: r[3], mNeft: r[4],
                         pCash: r[5], pUpi: r[6], pCard: r[7], pNeft: r[8],
-                        enq: r[9], nSale: r[10], ren: r[11], rohini: r[12],
+                        enq: r[9], nSale: r[10], ren: r[11], 
+                        kanchan: r[12], igLeads: r[17]||0,
                         transfer: r[14]||0, freeze: r[15]||0, locker: r[16]||0,
-                        mDebit: r[17]||0, mCheque: r[18]||0, shiftM: r[19]||"-", shiftE: r[20]||"-"
+                        mDebit: r[17]||0, mCheque: r[18]||0, 
+                        shiftM: r[20]||"-", shiftE: r[21]||"-",
+                        rasika: r[22]||0, roshni: r[23]||0
                     };
-                    document.getElementById('reportDisplay').innerText = generateFormat(d, data.tmcTillDate, data.ptTillDate, data.tmcCash, data.tmcUpi, data.tmcCredit, data.tmcDebit, data.tmcNeft, data.tmcCheque, data.rohiniTotal);
+                    document.getElementById('reportDisplay').innerText = generateFormat(d, data.tmcTillDate, data.ptTillDate, data.tmcCash, data.tmcUpi, data.tmcCredit, data.tmcDebit, data.tmcNeft, data.tmcCheque, data.kanchanTotal, data.rasikaTotal, data.roshniTotal);
                     document.getElementById('entryPage').style.display = 'none';
                     document.getElementById('reportPage').style.display = 'block';
-                } else { alert("Data entry not found for this timestamp."); }
-            } catch (e) { alert("Buffer Error: Check Connection."); }
+                } else { alert("Data entry not found."); }
+            } catch (e) { alert("Buffer Error."); }
         }
 
         async function processAndSync() {
@@ -274,9 +281,12 @@ Evening shift:- ${d.shiftE}`;
                 freeze: document.getElementById('freeze').value || 0,
                 locker: document.getElementById('locker').value || 0,
                 enq: document.getElementById('enq').value || 0,
+                igLeads: document.getElementById('igLeads').value || 0,
                 nSale: document.getElementById('nSale').value || 0,
                 ren: document.getElementById('ren').value || 0,
-                rohini: document.getElementById('rohini').value || 0,
+                kanchan: document.getElementById('kanchan').value || 0,
+                rasika: document.getElementById('rasika').value || 0,
+                roshni: document.getElementById('roshni').value || 0,
                 shiftM: document.getElementById('sM').value || "-",
                 shiftE: document.getElementById('sE').value || "-"
             };
