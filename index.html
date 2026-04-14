@@ -49,7 +49,6 @@
             margin-bottom: 25px; 
             backdrop-filter: blur(10px);
             position: relative;
-            overflow: hidden;
         }
 
         .section-title { 
@@ -130,7 +129,7 @@
             <div class="grid-2">
                 <div><label>Cash</label><input type="number" id="pCash" value="0"></div>
                 <div><label>UPI</label><input type="number" id="pUpi" value="0"></div>
-                <div><label>Card</label><input type="number" id="pCard" value="0"></div>
+                <div><label>Card (Debit)</label><input type="number" id="pCard" value="0"></div>
                 <div><label>NEFT</label><input type="number" id="pNeft" value="0"></div>
             </div>
         </div>
@@ -168,7 +167,7 @@
         </div>
 
         <button class="neon-btn" id="submitBtn" onclick="processAndSync()">SYNC TO CLOUD</button>
-        <footer>SYSTEM v3.3 // TAISO FITNESS</footer>
+        <footer>SYSTEM v3.5 // TAISO FITNESS</footer>
     </div>
 
     <div id="reportPage" class="container">
@@ -180,9 +179,17 @@
 
     <script>
         document.getElementById('date').valueAsDate = new Date();
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwV-xPagx3KOiSetJorB0rF_M4eJmXh45ZzL3raLnGUSk4zM7wb69jTmt77ArNXFZovww/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby2Eyr2XdtiCVllJgLyuMlTw6gF7-HOTErohe_reKTQt2kFjIjMJQVPMmAC7y325Yi4lg/exec";
 
         function generateFormat(d, tmcTill, ptTill, tmcCash, tmcUpi, tmcCredit, tmcDebit, tmcNeft, tmcCheque, kTotal, rTotal, roTotal) {
+            const combinedCash = Number(d.mCash) + Number(d.pCash);
+            const combinedUpi = Number(d.mUpi) + Number(d.pUpi);
+            const combinedNeft = Number(d.mNeft) + Number(d.pNeft);
+            
+            // Separate Card Breakdown
+            const totalCreditBreakdown = Number(d.mCredit);
+            const totalDebitBreakdown = Number(d.mDebit) + Number(d.pCard); 
+            
             const membershipToday = Number(d.mCash)+Number(d.mUpi)+Number(d.mCheque)+Number(d.mCredit)+Number(d.mDebit)+Number(d.mNeft);
             const ptToday = Number(d.pCash)+Number(d.pUpi)+Number(d.pCard)+Number(d.pNeft);
             const gymTodayCombined = membershipToday + ptToday;
@@ -192,12 +199,12 @@
 TMC Till Date : ${Number(tmcTill).toLocaleString()}/-
 
 Gym today’s collection: ${gymTodayCombined.toLocaleString()}/-
-Cash: ${Number(d.mCash).toLocaleString()}/-
-Upi: ${Number(d.mUpi).toLocaleString()}/-
+Cash: ${combinedCash.toLocaleString()}/-
+Upi: ${combinedUpi.toLocaleString()}/-
 Cheque: ${Number(d.mCheque).toLocaleString()}/-
-Card credit: ${Number(d.mCredit).toLocaleString()}/-
-Card Debit: ${Number(d.mDebit).toLocaleString()}/-
-Neft: ${Number(d.mNeft).toLocaleString()}/-
+Card Credit: ${totalCreditBreakdown.toLocaleString()}/-
+Card Debit: ${totalDebitBreakdown.toLocaleString()}/-
+Neft: ${combinedNeft.toLocaleString()}/-
 
 Total PT Collection: ${Number(ptTill).toLocaleString()}/-
 Today's PT collection: ${ptToday.toLocaleString()}/-
